@@ -1,18 +1,32 @@
 package assignment_2;
 
-import java.awt.*;
-import java.awt.event.*;
+import java.awt.BasicStroke;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 import java.awt.geom.Line2D;
 import java.awt.geom.QuadCurve2D;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.util.StringTokenizer;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Set;
+import java.util.StringTokenizer;
+
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+
+import assignment_2.pqs.HeapMinimumPriorityQueue;
+import assignment_2.pqs.WeightNode;
 
 /**
  * This class implements the weighted directed graph ADT and a simple GUI for
@@ -42,12 +56,16 @@ public class WGraph extends JPanel implements MouseMotionListener,
 	// out-neighbours
 	public HashMap<Integer, HashMap<Integer, Double>> data;
 	//
-	private HashMap<Integer, Node> nodeList;
+	public HashMap<Integer, Node> nodeList;
 	// The collection of node in the graph
 	// This set is the key set of data
 	public Set<Integer> nodeSet;
 	// The textfield used for user to specify commands
 	private JTextField tf;
+
+	// Added weight PQ and set for mst
+	public HeapMinimumPriorityQueue<WeightNode> weightPQ;
+	public Collection<Integer> mstNodes;
 
 	// The Constructor
 	public WGraph() {
@@ -55,6 +73,10 @@ public class WGraph extends JPanel implements MouseMotionListener,
 		data = new HashMap<Integer, HashMap<Integer, Double>>();
 		nodeList = new HashMap<Integer, Node>();
 		nodeSet = data.keySet();
+
+		// init starts
+		weightPQ = new HeapMinimumPriorityQueue<>();
+		// init ends
 
 		JPanel panel = new JPanel();
 		barb = 20; // barb length
@@ -113,6 +135,9 @@ public class WGraph extends JPanel implements MouseMotionListener,
 		HashMap<Integer, Double> list = data.get((Integer) node1);
 		if (!list.containsKey((Integer) node2)) {
 			list.put((Integer) node2, (Double) weight);
+			System.out.println(node1 + " " + node2 + " " + weight);
+			WeightNode wn = new WeightNode(node1, node2, weight);
+			this.weightPQ.insert(wn);
 		}
 	}
 
@@ -318,8 +343,13 @@ public class WGraph extends JPanel implements MouseMotionListener,
 					node2 = Integer.parseInt(st.nextToken());
 					GraphToolBox.dijkstra(this, node1, node2);
 				} catch (Exception e) {
-					System.out.println("Invalid command" + e.getMessage());
+					System.out.println("There is no pass between "
+							+ "the source node and the sink node");
 				}
+				break;
+
+			case "mst":
+				GraphToolBox.mst(this);
 				break;
 
 			case "load":

@@ -1,8 +1,18 @@
 package assignment_2;
 
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.Stack;
 
+import assignment_2.pqs.HeapMinimumPriorityQueue;
+import assignment_2.pqs.WeightNode;
+
+/**
+ * Inspired by Mahmoud as he created a draft for us to work on.
+ * 
+ * @author Mahmoud, Ximei & Yue
+ *
+ */
 public class GraphToolBox {
 
 	private static HashMap<Integer, Integer> leastEdges;
@@ -46,41 +56,58 @@ public class GraphToolBox {
 			currentSource = priortyQueue.getMinimumum().node;
 		}
 
-		for (Integer node : distances.keySet()) {
-			System.out.println("Node " + node + " shortest distance from "
-					+ "source node " + sourceNode + " is "
-					+ distances.get(node).distance
-					+ " with least incident edge " + "from " + "node "
-					+ leastEdges.get(node) + " path: ");
-		}
-		showPathFromSource(sourceNode);
-		// System.out.println(getPath(sourceNode, sinkNode, ""));
+		// for (Integer node : distances.keySet()) {
+		// System.out.println("Node " + node + " shortest distance from "
+		// + "source node " + sourceNode + " is "
+		// + distances.get(node).distance
+		// + " with least incident edge " + "from " + "node "
+		// + leastEdges.get(node) + " path: ");
+		// }
+		System.out.println("The pass from node " + sourceNode + " to "
+				+ sinkNode + " is:\n"
+				+ showPathFromSource(sourceNode, sinkNode));
 	}
 
-	public static void showPathFromSource(Integer sourceNode) {
-		for (Integer node : distances.keySet()) {
-			// if (node != sourceNode)
-			// System.out.println(node + ", " + getPath(node, sourceNode, ""));
-			System.out.println(node);
-		}
-	}
-
-	public static String getPath(Object node, Object source, String ans) {
-
-		if ((Integer) node == (Integer) source)
-			return ans.substring(0, ans.length() - 2);
-		else {
-			Object obj = leastEdges.get(node);
-			ans += (Integer) obj + ", ";
-			System.out.println(ans);
-			try {
-				Thread.sleep(2000);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+	public static void mst(WGraph wgraph) {
+		wgraph.mstNodes = new LinkedList<>();
+		// HashMap<Integer, Double> list = wgraph.data.get(source.to);
+		int pre = Integer.MAX_VALUE;
+		while (wgraph.weightPQ.size() > 0) {
+			WeightNode temp = wgraph.weightPQ.getMinimumum();
+			// init condition
+			if (!wgraph.mstNodes.contains(temp.to)
+					&& !wgraph.mstNodes.contains(temp.from)) {
+				wgraph.mstNodes.add(temp.from);
+				wgraph.mstNodes.add(temp.to);
+			} else if (!wgraph.mstNodes.contains(temp.to)) {
+				wgraph.mstNodes.add(temp.from);
+				wgraph.mstNodes.add(temp.to);
 			}
-			return getPath(obj, source, ans);
+			// wgraph.mstNodes.add(temp.to);
+			pre = temp.to;
 		}
+		for (Integer tem : wgraph.mstNodes)
+			System.out.println(tem);
+	}
+
+	private static String showPathFromSource(Integer sourceNode, Integer target) {
+		Stack<Integer> stack = new Stack<>();
+		stack.push(target);
+		int tempNode = getPreviousNode(target);
+		while (tempNode != sourceNode) {// may be not connected by the source
+			stack.push(tempNode);
+			tempNode = getPreviousNode(tempNode);
+		}
+		stack.push(sourceNode);
+		String result = "[";
+		while (!stack.isEmpty() && stack.size() > 1)
+			result += stack.pop() + ", ";
+		result += stack.pop() + "]";
+		return result;
+	}
+
+	private static Integer getPreviousNode(Integer node) {
+		return leastEdges.get(node);
 	}
 
 	// public static void perform(WGraph wgraph, Integer sourceNode) {
@@ -150,4 +177,5 @@ public class GraphToolBox {
 				return 0;
 		}
 	}
+
 }

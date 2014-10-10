@@ -1,4 +1,4 @@
-package assignment_2;
+package assignment_2.pqs;
 
 import java.util.ArrayList;
 
