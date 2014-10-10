@@ -7,14 +7,7 @@ import java.awt.geom.QuadCurve2D;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.io.IOException;
-
-import java.util.ArrayList;
-
-import java.util.LinkedList;
 import java.util.StringTokenizer;
-import java.util.List;
-import java.util.Random;
 import java.util.HashMap;
 import java.util.Set;
 import javax.swing.JFrame;
@@ -42,22 +35,17 @@ public class WGraph extends JPanel implements MouseMotionListener,
 	private double phi; // angle of an arrow edge
 	private Integer moveNode; // the node the user is moving on the GUI
 	private Integer selectedNode; // the node selected
-
 	public final static int CIRCLEDIAMETER = 40; // Diameter of the nodes
-
 	// This is the adjacency list representation of the digraph
 	// The nodes are denoted here as Integers
 	// Each node is associated with a list of Integers, which indicates its
 	// out-neighbours
-	private HashMap<Integer, HashMap<Integer, Double>> data;
-
+	public HashMap<Integer, HashMap<Integer, Double>> data;
 	//
 	private HashMap<Integer, Node> nodeList;
-
 	// The collection of node in the graph
 	// This set is the key set of data
-	private Set<Integer> nodeSet;
-
+	public Set<Integer> nodeSet;
 	// The textfield used for user to specify commands
 	private JTextField tf;
 
@@ -75,6 +63,7 @@ public class WGraph extends JPanel implements MouseMotionListener,
 		addMouseMotionListener(this);
 		addMouseListener(this);
 		tf = new JTextField();
+		tf.setText("load SampleGraph.dat");
 		tf.addActionListener(this);
 		setLayout(new BorderLayout());
 		add(panel, BorderLayout.NORTH);
@@ -90,8 +79,9 @@ public class WGraph extends JPanel implements MouseMotionListener,
 	 */
 	public void add(int node) {
 		// If the label node is already in the digraph, do nothing and return
-		if (data.containsKey((Integer) node))
+		if (data.containsKey((Integer) node)) {
 			return;
+		}
 		// Create a new linked list
 		HashMap<Integer, Double> list = new HashMap<Integer, Double>();
 		// Add a new entry to the adjacency list
@@ -113,14 +103,17 @@ public class WGraph extends JPanel implements MouseMotionListener,
 	 * edge is weight
 	 */
 	public void addEdge(int node1, int node2, double weight) {
-		if (node1 == node2)
+		if (node1 == node2) {
 			return;
+		}
 		if (!data.containsKey((Integer) node1)
-				|| !data.containsKey((Integer) node2))
+				|| !data.containsKey((Integer) node2)) {
 			return;
+		}
 		HashMap<Integer, Double> list = data.get((Integer) node1);
-		if (!list.containsKey((Integer) node2))
+		if (!list.containsKey((Integer) node2)) {
 			list.put((Integer) node2, (Double) weight);
+		}
 	}
 
 	/**
@@ -147,8 +140,9 @@ public class WGraph extends JPanel implements MouseMotionListener,
 					StringTokenizer token = new StringTokenizer(output);
 					while (token.hasMoreTokens()) {
 						st = token.nextToken();
-						if (!st.equals("#"))
+						if (!st.equals("#")) {
 							addEdge(i, col, Double.parseDouble(st));
+						}
 						col++;
 					}
 					col = 0;
@@ -171,11 +165,13 @@ public class WGraph extends JPanel implements MouseMotionListener,
 	 */
 	public void removeEdge(int node1, int node2) {
 		if (!data.containsKey((Integer) node1)
-				|| !data.containsKey((Integer) node2))
+				|| !data.containsKey((Integer) node2)) {
 			return;
+		}
 		HashMap<Integer, Double> list = data.get((Integer) node1);
-		if (list.containsKey((Integer) node2))
+		if (list.containsKey((Integer) node2)) {
 			list.remove((Integer) node2);
+		}
 	}
 
 	/**
@@ -185,11 +181,13 @@ public class WGraph extends JPanel implements MouseMotionListener,
 	 */
 	public void changeWeight(int node1, int node2, double weight) {
 		if (!data.containsKey((Integer) node1)
-				|| !data.containsKey((Integer) node2))
+				|| !data.containsKey((Integer) node2)) {
 			return;
+		}
 		HashMap<Integer, Double> list = data.get((Integer) node1);
-		if (list.containsKey((Integer) node2))
+		if (list.containsKey((Integer) node2)) {
 			list.put((Integer) node2, (Double) weight);
+		}
 	}
 
 	/**
@@ -197,13 +195,15 @@ public class WGraph extends JPanel implements MouseMotionListener,
 	 * method It should do nothing if the node is not contained in the digraph
 	 */
 	public void remove(int node) {
-		if (!data.containsKey((Integer) node))
+		if (!data.containsKey((Integer) node)) {
 			return;
+		}
 		HashMap<Integer, Double> list;
 		for (Integer i : nodeSet) {
 			list = data.get((Integer) i);
-			if (list.containsKey((Integer) node))
+			if (list.containsKey((Integer) node)) {
 				list.remove((Integer) node);
+			}
 		}
 		data.remove((Integer) node);
 		nodeList.remove((Integer) node);
@@ -254,10 +254,11 @@ public class WGraph extends JPanel implements MouseMotionListener,
 		for (int i = 0; i < n; i++) {
 			list = data.get(labels.get((Integer) i));
 			for (int j = 0; j < n; j++) {
-				if (list.containsKey(labels.get((Integer) j)))
+				if (list.containsKey(labels.get((Integer) j))) {
 					adjMatrix[i][j] = "" + list.get(labels.get((Integer) j));
-				else
+				} else {
 					adjMatrix[i][j] = "#";
+				}
 			}
 		}
 
@@ -311,6 +312,16 @@ public class WGraph extends JPanel implements MouseMotionListener,
 			token = st.nextToken();
 			token = token.toLowerCase();
 			switch (token) {
+			case "dijkstra":
+				try {
+					node1 = Integer.parseInt(st.nextToken());
+					node2 = Integer.parseInt(st.nextToken());
+					GraphToolBox.dijkstra(this, node1, node2);
+				} catch (Exception e) {
+					System.out.println("Invalid command" + e.getMessage());
+				}
+				break;
+
 			case "load":
 				try {
 					clear();
@@ -328,13 +339,15 @@ public class WGraph extends JPanel implements MouseMotionListener,
 						node1 = Integer.parseInt(st.nextToken());
 						node2 = Integer.parseInt(st.nextToken());
 						double weight = Double.parseDouble(st.nextToken());
-						if (st.hasMoreTokens())
+						if (st.hasMoreTokens()) {
 							break;
+						}
 						addEdge(node1, node2, weight);
 					} else if (opt.equals("node")) {
 						node1 = Integer.parseInt(st.nextToken());
-						if (st.hasMoreTokens())
+						if (st.hasMoreTokens()) {
 							break;
+						}
 						add(node1);
 					}
 				} catch (Exception e) {
@@ -348,13 +361,15 @@ public class WGraph extends JPanel implements MouseMotionListener,
 					if (opt.equals("edge")) {
 						node1 = Integer.parseInt(st.nextToken());
 						node2 = Integer.parseInt(st.nextToken());
-						if (st.hasMoreTokens())
+						if (st.hasMoreTokens()) {
 							break;
+						}
 						removeEdge(node1, node2);
 					} else if (opt.equals("node")) {
 						node1 = Integer.parseInt(st.nextToken());
-						if (st.hasMoreTokens())
+						if (st.hasMoreTokens()) {
 							break;
+						}
 						remove(node1);
 					}
 				} catch (Exception e) {
@@ -369,8 +384,9 @@ public class WGraph extends JPanel implements MouseMotionListener,
 						node1 = Integer.parseInt(st.nextToken());
 						node2 = Integer.parseInt(st.nextToken());
 						double w = Double.parseDouble(st.nextToken());
-						if (st.hasMoreTokens())
+						if (st.hasMoreTokens()) {
 							break;
+						}
 						changeWeight(node1, node2, w);
 					}
 				} catch (Exception e) {
@@ -403,10 +419,11 @@ public class WGraph extends JPanel implements MouseMotionListener,
 				}
 				break;
 			case "clear":
-				if (!st.hasMoreTokens())
+				if (!st.hasMoreTokens()) {
 					clear();
-				else
+				} else {
 					System.out.println("Invalid command");
+				}
 				break;
 			default:
 				System.out.println("Invalid command");
@@ -436,15 +453,17 @@ public class WGraph extends JPanel implements MouseMotionListener,
 		HashMap<Integer, Double> outNeighbours;
 
 		for (Integer i : nodeSet) {
-			if (selectedNode == i)
+			if (selectedNode == i) {
 				nodeList.get(i).draw(g, Color.RED);
-			else
+			} else {
 				nodeList.get(i).draw(g, Color.BLACK);
+			}
 			outNeighbours = data.get(i);
 			for (Integer j : nodeSet) {
-				if (outNeighbours.containsKey(j))
+				if (outNeighbours.containsKey(j)) {
 					drawEdge(i, j, g, Color.BLACK, Color.BLUE,
 							outNeighbours.get(j));
+				}
 			}
 
 		}
@@ -489,13 +508,15 @@ public class WGraph extends JPanel implements MouseMotionListener,
 		if (x1 < x2) {
 			if (y1 < y2) {
 				return (x1 + x2) / 2 + 20;
-			} else
+			} else {
 				return (x1 + x2) / 2 - 24;
+			}
 		} else {
 			if (y1 < y2) {
 				return (x1 + x2) / 2 + 20;
-			} else
+			} else {
 				return (x1 + x2) / 2 - 24;
+			}
 		}
 
 	}
@@ -503,8 +524,9 @@ public class WGraph extends JPanel implements MouseMotionListener,
 	public int calcTextPosY(int x1, int x2, int y1, int y2) {
 		if (x1 < x2) {
 			return (y1 + y2) / 2 - 10;
-		} else
+		} else {
 			return (y1 + y2) / 2 + 10;
+		}
 	}
 
 	// draws the arrows on the edges
@@ -555,9 +577,9 @@ public class WGraph extends JPanel implements MouseMotionListener,
 			}
 		}
 		if (onNode) {
-			if (selectedNode == -1)
+			if (selectedNode == -1) {
 				selectedNode = clicked;
-			else {
+			} else {
 				if (clicked.equals(selectedNode)) {
 					selectedNode = -1;
 				} else {
@@ -568,8 +590,9 @@ public class WGraph extends JPanel implements MouseMotionListener,
 		}
 		if (!onNode) {
 			int newNode = 0;
-			while (nodeSet.contains((Integer) newNode))
+			while (nodeSet.contains((Integer) newNode)) {
 				newNode++;
+			}
 			add((Integer) newNode);
 			selectedNode = newNode;
 		}
@@ -610,7 +633,6 @@ public class WGraph extends JPanel implements MouseMotionListener,
 		public int ypos;
 		public int nodeNum;
 		public int inEdges, arraySpot;
-
 		int dirX, dirY;
 
 		public Node(int num) {
@@ -693,10 +715,12 @@ public class WGraph extends JPanel implements MouseMotionListener,
 			xpos = xpos - 2 * dirX;
 			ypos = ypos - 2 * dirY;
 
-			if (xpos < 50 || xpos > 360)
+			if (xpos < 50 || xpos > 360) {
 				dirX = (-1) * dirX;
-			if (ypos < 50 || ypos > 360)
+			}
+			if (ypos < 50 || ypos > 360) {
 				dirY = (-1) * dirY;
+			}
 
 		}
 	}
@@ -716,17 +740,29 @@ public class WGraph extends JPanel implements MouseMotionListener,
 		frame.setVisible(true);
 
 		// Expected Print Output:
-		/**
-		 * Node 0 indegree: 0 outdegree: 2 Node 1 indegree: 1 outdegree: 1 Node
-		 * 2 indegree: 2 outdegree: 0 Size of the digraph: 3 Order of the
-		 * digraph: 3 ------------------------- 0 1 2 0 0 1 1 1 0 0 1 2 0 0 0
-		 * ------------------------- --------- 0: 1 2 1: 2 2: ---------
-		 * Universal Source found: 0 Universal Sink found: 2 Transpose
-		 * ------------------------- 0 1 2 0 0 0 0 1 1 0 0 2 1 1 0
-		 * ------------------------- Underlying Graph -------------------------
-		 * 0 1 2 0 0 1 1 1 1 0 1 2 1 1 0 -------------------------
-		 */
-
+		//
+		// Node 0 indegree: 0 outdegree: 2
+		// Node 1 indegree: 1 outdegree: 1
+		// Node 2 indegree: 2 outdegree: 0
+		// Size of the digraph: 3
+		// Order of the digraph: 3
+		// -------------------------
+		// 0 1 2 0 0 1 1 1 0 0 1 2 0 0 0
+		// -------------------------
+		// ---------
+		// 0: 1 2
+		// 1: 2
+		// 2:
+		// ---------
+		// Universal Source found: 0
+		// Universal Sink found: 2
+		// Transpose
+		// -------------------------
+		// 0 1 2 0 0 0 0 1 1 0 0 2 1 1 0
+		// -------------------------
+		// Underlying Graph
+		// -------------------------
+		// 0 1 2 0 0 1 1 1 1 0 1 2 1 1 0
+		// -------------------------
 	}
-
 }
