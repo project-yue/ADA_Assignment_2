@@ -65,7 +65,8 @@ public class WGraph extends JPanel implements MouseMotionListener,
 
 	// Added weight PQ and set for mst
 	public HeapMinimumPriorityQueue<WeightNode> weightPQ;
-	public Collection<Integer> mstNodes;
+	public Collection<Integer> mstEdges;
+	public boolean isMst;
 
 	// The Constructor
 	public WGraph() {
@@ -349,7 +350,7 @@ public class WGraph extends JPanel implements MouseMotionListener,
 				break;
 
 			case "mst":
-				GraphToolBox.mst(this);
+				GraphToolBox.mst(this, super.getGraphics());
 				break;
 
 			case "load":
@@ -459,10 +460,8 @@ public class WGraph extends JPanel implements MouseMotionListener,
 				System.out.println("Invalid command");
 				break;
 			}
-
 		}
 		repaint();
-
 	}
 
 	/**
@@ -490,7 +489,7 @@ public class WGraph extends JPanel implements MouseMotionListener,
 			}
 			outNeighbours = data.get(i);
 			for (Integer j : nodeSet) {
-				if (outNeighbours.containsKey(j)) {
+				if (outNeighbours.containsKey(j) && !this.isMst) {
 					drawEdge(i, j, g, Color.BLACK, Color.BLUE,
 							outNeighbours.get(j));
 				}
