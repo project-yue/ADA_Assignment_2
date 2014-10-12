@@ -6,13 +6,13 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JWindow;
 
-public class SplashScreen extends JWindow {
+public class Splash extends JWindow {
 	JLabel lbl;
 	Image image;
 	ImageIcon icon;
 	JPanel contentPane;
 
-	public SplashScreen() {
+	public Splash() {
 		image = new ImageIcon((getClass().getResource("yolo.png"))).getImage();
 		icon = new ImageIcon(image);
 		enableEvents(AWTEvent.WINDOW_EVENT_MASK);
@@ -46,7 +46,7 @@ public class SplashScreen extends JWindow {
 	}
 
 	public static void main(String[] arg) {
-		SplashScreen splash = new SplashScreen();
+		Splash splash = new Splash();
 		// get rid of window as it finished showing
 		splash.dispose();
 	}

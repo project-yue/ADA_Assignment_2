@@ -759,7 +759,7 @@ public class WGraph extends JPanel implements MouseMotionListener,
 	//
 	public static void main(String[] args) {
 		WGraph g = new WGraph();
-		SplashScreen ss = new SplashScreen();
+		Splash ss = new Splash();
 		ss.dispose();
 		JFrame frame = new JFrame("Weighted Graph Implementation");
 		frame.setSize(450, 450);
