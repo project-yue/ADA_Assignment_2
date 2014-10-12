@@ -2,10 +2,10 @@ package assignment_2;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
-import java.util.Scanner;
 import java.util.Stack;
 
 import assignment_2.pqs.HeapMinimumPriorityQueue;
@@ -67,29 +67,30 @@ public class GraphToolBox {
 		// + " with least incident edge " + "from " + "node "
 		// + leastEdges.get(node) + " path: ");
 		// }
-		System.out.println("The dijkstra path from node " + sourceNode + " to "
-				+ sinkNode + " is:\n"
-				+ showPathFromSource(sourceNode, sinkNode));
+		System.out.println("The distance from node " + sourceNode + " to "
+				+ sinkNode + " is " + distances.get(sinkNode).distance
+				+ "\nDijkstra path:\n"
+				+ showPathFromSource(sourceNode, sinkNode, wgraph));
 	}
 
 	public static void mst(WGraph wgraph, Graphics g) {
-		wgraph.mstEdges = new LinkedList<>();
+		LinkedList<Integer> mstEdges = new LinkedList<>();
 		HashSet<Integer> set = new HashSet<>();
+		HeapMinimumPriorityQueue<WeightNode> tempPQ = wgraph.weightPQ.clone();
 		int pre = Integer.MAX_VALUE;
 		double lastDistance = 0.0;
-		while (wgraph.weightPQ.size() > 0) {
-			WeightNode temp = wgraph.weightPQ.getMinimumum();
+		while (tempPQ.size() > 0) {
+			WeightNode temp = tempPQ.getMinimumum();
 			// init condition
-			if (!wgraph.mstEdges.contains(temp.to)
-					&& !wgraph.mstEdges.contains(temp.from)) {
-				wgraph.mstEdges.add(temp.from);
-				wgraph.mstEdges.add(temp.to);
+			if (!mstEdges.contains(temp.to) && !mstEdges.contains(temp.from)) {
+				mstEdges.add(temp.from);
+				mstEdges.add(temp.to);
 				if (set.size() == 0) {
 					set.add(temp.from);
 					set.add(temp.to);
 					lastDistance = temp.weight;
-				} else if (wgraph.mstEdges.contains(temp.to)
-						&& wgraph.mstEdges.contains(temp.from)
+				} else if (mstEdges.contains(temp.to)
+						&& mstEdges.contains(temp.from)
 						&& temp.weight == lastDistance) {
 					wgraph.drawEdge(temp.from, temp.to, g, Color.GREEN,
 							Color.BLUE, temp.weight);
@@ -106,21 +107,19 @@ public class GraphToolBox {
 				}
 				wgraph.drawEdge(temp.from, temp.to, g, Color.GREEN, Color.BLUE,
 						temp.weight);
-			} else if (wgraph.mstEdges.contains(temp.to)
-					&& wgraph.mstEdges.contains(temp.from)) {
+			} else if (mstEdges.contains(temp.to)
+					&& mstEdges.contains(temp.from)) {
 				HashMap<Integer, Double> list = wgraph.data.get(temp.from);
 				if (list.containsKey(temp.to) && temp.weight == 2
 						&& temp.from == 1)
 					wgraph.drawEdge(temp.from, temp.to, g, Color.GREEN,
 							Color.BLUE, temp.weight);
-				// System.out.println(temp.to + " and " + temp.from
-				// + " are connected");
 				if (temp.weight == lastDistance) {
 					wgraph.drawEdge(temp.from, temp.to, g, Color.GREEN,
 							Color.BLUE, temp.weight);
 				}
-			} else if (!wgraph.mstEdges.contains(temp.to)) {
-				wgraph.mstEdges.add(temp.from);
+			} else if (!mstEdges.contains(temp.to)) {
+				mstEdges.add(temp.from);
 				wgraph.drawEdge(temp.from, temp.to, g, Color.GREEN, Color.BLUE,
 						temp.weight);
 			} else if (temp.weight == lastDistance) {
@@ -128,17 +127,25 @@ public class GraphToolBox {
 						temp.weight);
 			}
 			pre = temp.to;
+			wgraph.repaint();
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
 		}
-		for (Integer tem : wgraph.mstEdges)
+		for (Integer tem : mstEdges)
 			System.out.println(tem);
-		wgraph.repaint();
-		// holds the mst condition
-		System.out.println("type enter key to continue");
-		Scanner in = new Scanner(System.in);
-		in.nextLine();
+		// make thread to sleep for 5 secondscd
+		try {
+			Thread.sleep(5000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 	}
 
-	private static String showPathFromSource(Integer sourceNode, Integer target) {
+	private static String showPathFromSource(Integer sourceNode,
+			Integer target, WGraph graph) {
 		Stack<Integer> stack = new Stack<>();
 		stack.push(target);
 		int tempNode = getPreviousNode(target);
@@ -147,11 +154,44 @@ public class GraphToolBox {
 			tempNode = getPreviousNode(tempNode);
 		}
 		stack.push(sourceNode);
-		String result = "[";
-		while (!stack.isEmpty() && stack.size() > 1)
+		ArrayList<String> verticesLst = new ArrayList<>();
+		String vertices = Integer.toString(stack.peek()) + " ";
+		String result = "[" + stack.pop() + ", ";
+
+		while (!stack.isEmpty() && stack.size() > 1) {
+			vertices += stack.peek();
+			verticesLst.add(vertices);
+			vertices = stack.peek() + " ";
 			result += stack.pop() + ", ";
+		}
+		vertices += stack.peek();
 		result += stack.pop() + "]";
+		verticesLst.add(vertices);
+		plotDijkstraPath(verticesLst, graph);
 		return result;
+	}
+
+	private static void plotDijkstraPath(ArrayList<String> lst, WGraph g) {
+		System.out.println("plot Dijstra Path:");
+		for (String t : lst) {
+			String[] temp = t.split(" ");
+			int from = Integer.parseInt(temp[0]);
+			int to = Integer.parseInt(temp[1]);
+			double distance = g.data.get(from).get(to);
+			g.drawEdge(from, to, g.getGraphics(), Color.CYAN, Color.BLUE,
+					distance);
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+		try {
+			Thread.sleep(3000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		System.out.println("Dijstra Path completed");
 	}
 
 	private static Integer getPreviousNode(Integer node) {

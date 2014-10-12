@@ -10,6 +10,10 @@ public class HeapMinimumPriorityQueue<E extends Comparable<? super E>> {
 		heap = new ArrayList<>();
 	}
 
+	public HeapMinimumPriorityQueue(ArrayList<E> lst) {
+		heap = lst;
+	}
+
 	public E getMinimumum() {
 		if (heap.size() <= 0) {
 			return null;
@@ -58,6 +62,13 @@ public class HeapMinimumPriorityQueue<E extends Comparable<? super E>> {
 	public void heapify() {
 		// restores the min heap condition from the root after an update
 		minimumHeapify(0);
+	}
+
+	public HeapMinimumPriorityQueue<E> clone() {
+		@SuppressWarnings("unchecked")
+		HeapMinimumPriorityQueue<E> temp = new HeapMinimumPriorityQueue<>(
+				(ArrayList<E>) this.heap.clone());
+		return temp;
 	}
 
 	private void minimumHeapify(int index) {

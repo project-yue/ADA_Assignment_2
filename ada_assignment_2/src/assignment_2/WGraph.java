@@ -65,7 +65,7 @@ public class WGraph extends JPanel implements MouseMotionListener,
 
 	// Added weight PQ and set for mst
 	public HeapMinimumPriorityQueue<WeightNode> weightPQ;
-	public Collection<Integer> mstEdges;
+	// public Collection<Integer> mstEdges;
 	public boolean isMst;
 
 	// The Constructor
@@ -740,7 +740,6 @@ public class WGraph extends JPanel implements MouseMotionListener,
 		}
 
 		public void move() {
-
 			xpos = xpos - 2 * dirX;
 			ypos = ypos - 2 * dirY;
 
@@ -760,11 +759,13 @@ public class WGraph extends JPanel implements MouseMotionListener,
 	//
 	public static void main(String[] args) {
 		WGraph g = new WGraph();
-
+		SplashScreen ss = new SplashScreen();
+		ss.dispose();
 		JFrame frame = new JFrame("Weighted Graph Implementation");
 		frame.setSize(450, 450);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setLocation(0, 0);
+		frame.setLocationRelativeTo(null);
+//		frame.setLocation(0, 0);
 		frame.getContentPane().add(g);
 		frame.setVisible(true);
 
