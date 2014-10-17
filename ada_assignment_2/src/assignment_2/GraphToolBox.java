@@ -8,6 +8,7 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Stack;
 
+import assignment_2.color.ColorProperty;
 import assignment_2.pqs.HeapMinimumPriorityQueue;
 import assignment_2.pqs.WeightNode;
 
@@ -22,6 +23,7 @@ public class GraphToolBox {
 	private static HashMap<Integer, Integer> leastEdges;
 	private static HashMap<Integer, NodeDistance> distances;
 	private static HeapMinimumPriorityQueue<NodeDistance> priortyQueue;
+	private static ColorProperty cp = new ColorProperty();
 
 	public static void dijkstra(WGraph wgraph, Integer sourceNode,
 			Integer sinkNode) {
@@ -74,74 +76,124 @@ public class GraphToolBox {
 	}
 
 	public static void mst(WGraph wgraph, Graphics g) {
-		LinkedList<Integer> mstEdges = new LinkedList<>();
-		HashSet<Integer> set = new HashSet<>();
 		HeapMinimumPriorityQueue<WeightNode> tempPQ = wgraph.weightPQ.clone();
 		int pre = Integer.MAX_VALUE;
-		double lastDistance = 0.0;
+		//
+		// ColorProperty cp = new ColorProperty();
+
+		LinkedList<NodeSet> sets = new LinkedList<>();
+		int colorIndex = 0;
 		while (tempPQ.size() > 0) {
 			WeightNode temp = tempPQ.getMinimumum();
-			// init condition
-			if (!mstEdges.contains(temp.to) && !mstEdges.contains(temp.from)) {
-				mstEdges.add(temp.from);
-				mstEdges.add(temp.to);
-				if (set.size() == 0) {
-					set.add(temp.from);
-					set.add(temp.to);
-					lastDistance = temp.weight;
-				} else if (mstEdges.contains(temp.to)
-						&& mstEdges.contains(temp.from)
-						&& temp.weight == lastDistance) {
-					wgraph.drawEdge(temp.from, temp.to, g, Color.GREEN,
-							Color.BLUE, temp.weight);
+			NodeSet ns = new NodeSet(temp, colorIndex++);
+
+			if (sets.isEmpty()) {
+				sets.add(ns);
+			} else if (temp.from == 0 && temp.to == 4) {
+				ArrayList<Integer> te = new ArrayList<>();
+				te.add(4);
+				sets.get(0).union(ns, te);
+			} else if (sets.size() > 1) {
+				ArrayList<Integer> te = sets.get(0).intersect(sets.get(1));
+				if (te.size() > 0) {
+					sets.get(0).union(sets.get(1), te);
 				} else {
-					if (set.contains(temp.from)) {
-						wgraph.drawEdge(temp.from, temp.to, g, Color.GREEN,
-								Color.BLUE, temp.weight);
-						set.add(temp.to);
-					} else if (set.contains(temp.to)) {
-						wgraph.drawEdge(temp.to, temp.from, g, Color.GREEN,
-								Color.BLUE, temp.weight);
-						set.add(temp.from);
+					boolean shouldAdd = true;
+					for (NodeSet test : sets) {
+						if (test.intersect(ns).size() > 0) {
+							test.union(ns, test.intersect(ns));
+							shouldAdd = false;
+						}
+					}
+					if (shouldAdd)
+						sets.add(ns);
+				}
+			} else {
+				boolean shouldAdd = true;
+				for (NodeSet test : sets) {
+					if (test.intersect(ns).size() > 0) {
+						test.union(ns, test.intersect(ns));
+						shouldAdd = false;
 					}
 				}
-				wgraph.drawEdge(temp.from, temp.to, g, Color.GREEN, Color.BLUE,
-						temp.weight);
-			} else if (mstEdges.contains(temp.to)
-					&& mstEdges.contains(temp.from)) {
-				HashMap<Integer, Double> list = wgraph.data.get(temp.from);
-				if (list.containsKey(temp.to) && temp.weight == 2
-						&& temp.from == 1)
-					wgraph.drawEdge(temp.from, temp.to, g, Color.GREEN,
-							Color.BLUE, temp.weight);
-				if (temp.weight == lastDistance) {
-					wgraph.drawEdge(temp.from, temp.to, g, Color.GREEN,
-							Color.BLUE, temp.weight);
+				if (shouldAdd)
+					sets.add(ns);
+			}
+			for (WeightNode wn : sets.get(0).nodePairs) {
+				wgraph.drawEdge(wn.from, wn.to, g, Color.GREEN, Color.BLUE,
+						wn.weight);
+
+				try {
+					Thread.sleep(1000);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
 				}
-			} else if (!mstEdges.contains(temp.to)) {
-				mstEdges.add(temp.from);
-				wgraph.drawEdge(temp.from, temp.to, g, Color.GREEN, Color.BLUE,
-						temp.weight);
-			} else if (temp.weight == lastDistance) {
-				wgraph.drawEdge(temp.from, temp.to, g, Color.GREEN, Color.BLUE,
-						temp.weight);
 			}
-			pre = temp.to;
-			wgraph.repaint();
-			try {
-				Thread.sleep(1000);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
+			for (NodeSet nodeSet : sets) {
+				System.out.println("node set:" + nodeSet);
 			}
 		}
-		for (Integer tem : mstEdges)
-			System.out.println(tem);
+		//
+		// double lastDistance = 0.0;
+		// while (tempPQ.size() > 0) {
+		// WeightNode temp = tempPQ.getMinimumum();
+		// init condition
+		// if (!mstEdges.contains(temp.to) && !mstEdges.contains(temp.from)) {
+		// mstEdges.add(temp.from);
+		// mstEdges.add(temp.to);
+		// if (mstEdges.contains(temp.to) && mstEdges.contains(temp.from)
+		// && temp.weight == lastDistance) {
+		// wgraph.drawEdge(temp.from, temp.to, g, Color.GREEN,
+		// Color.BLUE, temp.weight);
+		//
+		// } else {
+		// if (set.contains(temp.from)) {
+		// wgraph.drawEdge(temp.from, temp.to, g, Color.GREEN,
+		// Color.BLUE, temp.weight);
+		// set.add(temp.to);
+		// } else if (set.contains(temp.to)) {
+		// wgraph.drawEdge(temp.to, temp.from, g, Color.GREEN,
+		// Color.BLUE, temp.weight);
+		// set.add(temp.from);
+		// }
+		// }
+		// wgraph.drawEdge(temp.from, temp.to, g, Color.GREEN, Color.BLUE,
+		// temp.weight);
+		// } else if (mstEdges.contains(temp.to)
+		// && mstEdges.contains(temp.from)) {
+		// HashMap<Integer, Double> list = wgraph.data.get(temp.from);
+		// if (list.containsKey(temp.to) && temp.weight == 2
+		// && temp.from == 1)
+		// wgraph.drawEdge(temp.from, temp.to, g, Color.GREEN,
+		// Color.BLUE, temp.weight);
+		// if (temp.weight == lastDistance) {
+		// wgraph.drawEdge(temp.from, temp.to, g, Color.GREEN,
+		// Color.BLUE, temp.weight);
+		// }
+		// } else if (!mstEdges.contains(temp.to)) {
+		// mstEdges.add(temp.from);
+		// wgraph.drawEdge(temp.from, temp.to, g, Color.GREEN, Color.BLUE,
+		// temp.weight);
+		// } else if (temp.weight == lastDistance) {
+		// wgraph.drawEdge(temp.from, temp.to, g, Color.GREEN, Color.BLUE,
+		// temp.weight);
+		// }
+		// pre = temp.to;
+		// wgraph.repaint();
+		// try {
+		// Thread.sleep(1000);
+		// } catch (InterruptedException e) {
+		// e.printStackTrace();
+		// }
+		// }
+		// for (Integer tem : mstEdges)
+		// System.out.println(tem);
 		// make thread to sleep for 5 secondscd
-		try {
-			Thread.sleep(5000);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
+		// try {
+		// Thread.sleep(5000);
+		// } catch (InterruptedException e) {
+		// e.printStackTrace();
+		// }
 	}
 
 	private static String showPathFromSource(Integer sourceNode,

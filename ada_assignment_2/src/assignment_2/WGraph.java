@@ -56,7 +56,7 @@ public class WGraph extends JPanel implements MouseMotionListener,
 	// out-neighbours
 	public HashMap<Integer, HashMap<Integer, Double>> data;
 	//
-	public HashMap<Integer, Node> nodeList;
+	public static HashMap<Integer, Node> NODE_LIST;
 	// The collection of node in the graph
 	// This set is the key set of data
 	public Set<Integer> nodeSet;
@@ -72,7 +72,7 @@ public class WGraph extends JPanel implements MouseMotionListener,
 	public WGraph() {
 
 		data = new HashMap<Integer, HashMap<Integer, Double>>();
-		nodeList = new HashMap<Integer, Node>();
+		NODE_LIST = new HashMap<Integer, Node>();
 		nodeSet = data.keySet();
 
 		// init starts
@@ -116,7 +116,7 @@ public class WGraph extends JPanel implements MouseMotionListener,
 		Node nodeVisual = new Node(node);
 		nodeVisual.xpos = 50 + (int) (Math.random() * 320);
 		nodeVisual.ypos = 50 + (int) (Math.random() * 320);
-		nodeList.put((Integer) node, nodeVisual);
+		NODE_LIST.put((Integer) node, nodeVisual);
 
 	}
 
@@ -232,7 +232,7 @@ public class WGraph extends JPanel implements MouseMotionListener,
 			}
 		}
 		data.remove((Integer) node);
-		nodeList.remove((Integer) node);
+		NODE_LIST.remove((Integer) node);
 
 	}
 
@@ -319,7 +319,7 @@ public class WGraph extends JPanel implements MouseMotionListener,
 	 */
 	public void clear() {
 		data.clear();
-		nodeList.clear();
+		NODE_LIST.clear();
 	}
 
 	/**
@@ -483,9 +483,9 @@ public class WGraph extends JPanel implements MouseMotionListener,
 
 		for (Integer i : nodeSet) {
 			if (selectedNode == i) {
-				nodeList.get(i).draw(g, Color.RED);
+				NODE_LIST.get(i).draw(g, Color.RED);
 			} else {
-				nodeList.get(i).draw(g, Color.BLACK);
+				NODE_LIST.get(i).draw(g, Color.BLACK);
 			}
 			outNeighbours = data.get(i);
 			for (Integer j : nodeSet) {
@@ -508,11 +508,11 @@ public class WGraph extends JPanel implements MouseMotionListener,
 
 		Graphics2D g2 = (Graphics2D) g;
 
-		int startX = nodeList.get(node1).getEdgeX(nodeList.get(node2));
-		int startY = nodeList.get(node1).getEdgeY(nodeList.get(node2));
+		int startX = NODE_LIST.get(node1).getEdgeX(NODE_LIST.get(node2));
+		int startY = NODE_LIST.get(node1).getEdgeY(NODE_LIST.get(node2));
 
-		int destX = nodeList.get(node2).getEdgeX(nodeList.get(node1));
-		int destY = nodeList.get(node2).getEdgeY(nodeList.get(node1));
+		int destX = NODE_LIST.get(node2).getEdgeX(NODE_LIST.get(node1));
+		int destY = NODE_LIST.get(node2).getEdgeY(NODE_LIST.get(node1));
 
 		g2.setStroke(new BasicStroke(2));
 		g2.setColor(colorLine);
@@ -579,7 +579,7 @@ public class WGraph extends JPanel implements MouseMotionListener,
 	@Override
 	public void mouseDragged(MouseEvent e) {
 		if (moveNode >= 0) {
-			Node node = nodeList.get(moveNode);
+			Node node = NODE_LIST.get(moveNode);
 			node.xpos = e.getPoint().x;
 			node.ypos = e.getPoint().y;
 			repaint();
@@ -596,7 +596,7 @@ public class WGraph extends JPanel implements MouseMotionListener,
 		boolean onNode = false;
 		Integer clicked = -1;
 		for (Integer i : nodeSet) {
-			node = nodeList.get(i);
+			node = NODE_LIST.get(i);
 			// Calculate the distance to the center of a node
 			double distance = Math.sqrt(Math.pow((e.getX() - node.xpos), 2)
 					+ Math.pow((e.getY() - node.ypos), 2));
@@ -632,7 +632,7 @@ public class WGraph extends JPanel implements MouseMotionListener,
 	public void mousePressed(MouseEvent e) {
 		Node node;
 		for (Integer i : nodeSet) {
-			node = nodeList.get(i);
+			node = NODE_LIST.get(i);
 			// Calculate the distance to the center of a node
 			double distance = Math.sqrt(Math.pow((e.getX() - node.xpos), 2)
 					+ Math.pow((e.getY() - node.ypos), 2));
@@ -765,7 +765,7 @@ public class WGraph extends JPanel implements MouseMotionListener,
 		frame.setSize(450, 450);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setLocationRelativeTo(null);
-//		frame.setLocation(0, 0);
+		// frame.setLocation(0, 0);
 		frame.getContentPane().add(g);
 		frame.setVisible(true);
 

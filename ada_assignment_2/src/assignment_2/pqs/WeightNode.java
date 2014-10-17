@@ -22,4 +22,7 @@ public class WeightNode implements Comparable<WeightNode> {
 			return 0;
 	}
 
+	public String toString() {
+		return from + " " + to;
+	}
 }
