@@ -47,17 +47,17 @@ public class Digraph extends JPanel implements MouseMotionListener,
 	// The nodes are denoted here as Integers
 	// Each node is associated with a list of Integers, which indicates its
 	// out-neighbours
-	private HashMap<Integer, List<Integer>> data;
+	protected HashMap<Integer, List<Integer>> data;
 
 	//
-	private HashMap<Integer, Node> nodeList;
+	protected HashMap<Integer, Node> nodeList;
 
 	// The collection of node in the graph
 	// This set is the key set of data
-	private Set<Integer> nodeSet;
+	protected Set<Integer> nodeSet;
 
 	// The textfield used for user to specify commands
-	private JTextField tf;
+	protected JTextField tf;
 
 	// The Constructor
 	public Digraph() {
@@ -89,6 +89,7 @@ public class Digraph extends JPanel implements MouseMotionListener,
 	 *
 	 */
 	public void load(String fileName) {
+		data.clear();
 		try {
 			BufferedReader br = new BufferedReader(new FileReader(fileName));
 			int numNodes = Integer.parseInt(br.readLine());
@@ -123,8 +124,9 @@ public class Digraph extends JPanel implements MouseMotionListener,
 	 */
 	public void add(int node) {
 		// If the label node is already in the digraph, do nothing and return
-		if (data.containsKey((Integer) node))
+		if (data.containsKey((Integer) node)) {
 			return;
+		}
 		// Create a new linked list
 		List<Integer> list = new LinkedList<Integer>();
 		// Add a new entry to the adjacency list
@@ -146,33 +148,17 @@ public class Digraph extends JPanel implements MouseMotionListener,
 	 *
 	 */
 	public void addEdge(int node1, int node2) {
-		if (node1 == node2)
+		if (node1 == node2) {
 			return;
+		}
 		if (!data.containsKey((Integer) node1)
-				|| !data.containsKey((Integer) node2))
+				|| !data.containsKey((Integer) node2)) {
 			return;
+		}
 		List<Integer> list = data.get((Integer) node1);
-		if (!list.contains((Integer) node2))
+		if (!list.contains((Integer) node2)) {
 			list.add((Integer) node2);
-	}
-
-	/**
-	 * get out edges of a node
-	 * 
-	 * @author Yue
-	 */
-	public int[] containOutEdges(int node) {
-		List<Integer> lst = data.get((Integer) node);
-		int[] result = new int[lst.size()];
-		for (int i = 0; i < lst.size(); i++) {
-			result[i] = lst.get(i);
 		}
-		System.out.print("[");
-		for (int i = 0; i < result.length - 1; i++) {
-			System.out.print(result[i] + ", ");
-		}
-		System.out.println(result[result.length - 1] + "]");
-		return result;
 	}
 
 	/**
@@ -182,11 +168,13 @@ public class Digraph extends JPanel implements MouseMotionListener,
 	 */
 	public void removeEdge(int node1, int node2) {
 		if (!data.containsKey((Integer) node1)
-				|| !data.containsKey((Integer) node2))
+				|| !data.containsKey((Integer) node2)) {
 			return;
+		}
 		List<Integer> list = data.get((Integer) node1);
-		if (list.contains((Integer) node2))
+		if (list.contains((Integer) node2)) {
 			list.remove((Integer) node2);
+		}
 	}
 
 	/**
@@ -197,13 +185,15 @@ public class Digraph extends JPanel implements MouseMotionListener,
 		// ///////////////////////////////////////
 		// Insert your code here
 		// ///////////////////////////////////////
-		if (!data.containsKey((Integer) node))
+		if (!data.containsKey((Integer) node)) {
 			return;
+		}
 		List<Integer> list;
 		for (Integer i : nodeSet) {
 			list = data.get((Integer) i);
-			if (list.contains((Integer) node))
+			if (list.contains((Integer) node)) {
 				list.remove((Integer) node);
+			}
 		}
 		data.remove((Integer) node);
 		nodeList.remove((Integer) node);
@@ -222,14 +212,16 @@ public class Digraph extends JPanel implements MouseMotionListener,
 		// Insert your code here
 		// ///////////////////////////////////////
 
-		if (!data.containsKey((Integer) node))
+		if (!data.containsKey((Integer) node)) {
 			return -1;
+		}
 		List<Integer> list;
 		int indeg = 0;
 		for (Integer j : nodeSet) {
 			list = data.get((Integer) j);
-			if (list.contains((Integer) node))
+			if (list.contains((Integer) node)) {
 				indeg++;
+			}
 		}
 		return indeg;
 	}
@@ -240,8 +232,9 @@ public class Digraph extends JPanel implements MouseMotionListener,
 	 *
 	 */
 	public int outdegree(int node) {
-		if (!data.containsKey((Integer) node))
+		if (!data.containsKey((Integer) node)) {
 			return -1;
+		}
 		return data.get((Integer) node).size();
 	}
 
@@ -273,8 +266,9 @@ public class Digraph extends JPanel implements MouseMotionListener,
 	 *
 	 */
 	public boolean isUniversalSource(int node) {
-		if (!data.containsKey((Integer) node))
+		if (!data.containsKey((Integer) node)) {
 			return false;
+		}
 		return (indegree(node) == 0 && outdegree(node) == (graphOrder() - 1));
 	}
 
@@ -284,8 +278,9 @@ public class Digraph extends JPanel implements MouseMotionListener,
 	 *
 	 */
 	public boolean isUniversalSink(int node) {
-		if (!data.containsKey((Integer) node))
+		if (!data.containsKey((Integer) node)) {
 			return false;
+		}
 		return (outdegree(node) == 0 && indegree(node) == (graphOrder() - 1));
 	}
 
@@ -343,7 +338,6 @@ public class Digraph extends JPanel implements MouseMotionListener,
 		// ///////////////////////////////////////
 		// Insert your code here
 		// ///////////////////////////////////////
-
 		List<Integer> list;
 		int row = 0;
 		int column = 0;
@@ -374,10 +368,11 @@ public class Digraph extends JPanel implements MouseMotionListener,
 		for (int i = 0; i < n; i++) {
 			System.out.print("" + labels.get((Integer) i));
 			for (int j = 0; j < n; j++) {
-				if (adjMatrix[i][j])
+				if (adjMatrix[i][j]) {
 					System.out.print('\t' + "1");
-				else
+				} else {
 					System.out.print('\t' + "0");
+				}
 			}
 			System.out.print("" + '\n');
 		}
@@ -402,10 +397,6 @@ public class Digraph extends JPanel implements MouseMotionListener,
 	 * graph with the same nodes while the direction of all edges are reversed
 	 */
 	public void transpose() {
-		// ///////////////////////////////////////
-		// Insert your code here
-		// ///////////////////////////////////////
-
 		int n = graphOrder();
 		boolean[][] adjMatrix = new boolean[n][n];
 		List<Integer> list;
@@ -429,8 +420,9 @@ public class Digraph extends JPanel implements MouseMotionListener,
 			list = data.get(labels.get(i));
 			list.clear();
 			for (int j = 0; j < n; j++) {
-				if (adjMatrix[j][i])
+				if (adjMatrix[j][i]) {
 					addEdge(i, j);
+				}
 			}
 		}
 	}
@@ -468,16 +460,18 @@ public class Digraph extends JPanel implements MouseMotionListener,
 			list = data.get(labels.get(i));
 			list.clear();
 			for (int j = 0; j < n; j++) {
-				if (adjMatrix[j][i] || adjMatrix[i][j])
+				if (adjMatrix[j][i] || adjMatrix[i][j]) {
 					addEdge(i, j);
+				}
 			}
 		}
 	}
 
 	public void contract(int node1, int node2) {
 		if (!data.containsKey(node1) || !data.containsKey(node2)
-				|| node1 == node2)
+				|| node1 == node2) {
 			return;
+		}
 
 		int small, big;
 		if (node1 < node2) {
@@ -498,16 +492,18 @@ public class Digraph extends JPanel implements MouseMotionListener,
 		}
 		List<Integer> list;
 
-		if (list1.contains(big))
+		if (list1.contains(big)) {
 			list1.remove((Integer) big);
+		}
 
 		for (Integer i : nodeSet) {
 			if (i != big && i != small) {
 				list = data.get((Integer) i);
 				if (list.contains(big)) {
 					list.remove((Integer) big);
-					if (!list.contains(small))
+					if (!list.contains(small)) {
 						list.add((Integer) small);
+					}
 				}
 			}
 		}
@@ -548,13 +544,15 @@ public class Digraph extends JPanel implements MouseMotionListener,
 					if (opt.equals("edge")) {
 						node1 = Integer.parseInt(st.nextToken());
 						node2 = Integer.parseInt(st.nextToken());
-						if (st.hasMoreTokens())
+						if (st.hasMoreTokens()) {
 							break;
+						}
 						addEdge(node1, node2);
 					} else if (opt.equals("node")) {
 						node1 = Integer.parseInt(st.nextToken());
-						if (st.hasMoreTokens())
+						if (st.hasMoreTokens()) {
 							break;
+						}
 						add(node1);
 					}
 				} catch (Exception e) {
@@ -568,13 +566,15 @@ public class Digraph extends JPanel implements MouseMotionListener,
 					if (opt.equals("edge")) {
 						node1 = Integer.parseInt(st.nextToken());
 						node2 = Integer.parseInt(st.nextToken());
-						if (st.hasMoreTokens())
+						if (st.hasMoreTokens()) {
 							break;
+						}
 						removeEdge(node1, node2);
 					} else if (opt.equals("node")) {
 						node1 = Integer.parseInt(st.nextToken());
-						if (st.hasMoreTokens())
+						if (st.hasMoreTokens()) {
 							break;
+						}
 						remove(node1);
 					}
 				} catch (Exception e) {
@@ -592,10 +592,11 @@ public class Digraph extends JPanel implements MouseMotionListener,
 					switch (opt) {
 					case "degrees":
 						if (opt.equals("degrees")) {
-							for (Integer i : nodeSet)
+							for (Integer i : nodeSet) {
 								System.out.println("Node " + i + " indegree: "
 										+ indegree(i) + " outdegree: "
 										+ outdegree(i));
+							}
 						}
 						break;
 					case "size":
@@ -621,16 +622,18 @@ public class Digraph extends JPanel implements MouseMotionListener,
 				}
 				break;
 			case "transpose":
-				if (!st.hasMoreTokens())
+				if (!st.hasMoreTokens()) {
 					transpose();
-				else
+				} else {
 					System.out.println("Invalid command");
+				}
 				break;
 			case "underlying":
 				try {
 					if (st.nextToken().toLowerCase().equals("graph")
-							&& !st.hasMoreTokens())
+							&& !st.hasMoreTokens()) {
 						underlying();
+					}
 				} catch (Exception e) {
 					System.out.println("Invalid command");
 				}
@@ -644,8 +647,9 @@ public class Digraph extends JPanel implements MouseMotionListener,
 					opt = st.nextToken();
 					opt = opt.toLowerCase();
 					boolean found = false;
-					if (st.hasMoreTokens())
+					if (st.hasMoreTokens()) {
 						break;
+					}
 					switch (opt) {
 					case "source":
 						for (Integer i : nodeSet) {
@@ -657,9 +661,10 @@ public class Digraph extends JPanel implements MouseMotionListener,
 								break;
 							}
 						}
-						if (!found)
+						if (!found) {
 							System.out
 									.println("There is no universal source in the graph");
+						}
 						break;
 					case "sink":
 						for (Integer i : nodeSet) {
@@ -671,9 +676,10 @@ public class Digraph extends JPanel implements MouseMotionListener,
 								break;
 							}
 						}
-						if (!found)
+						if (!found) {
 							System.out
 									.println("There is no universal sink in the graph");
+						}
 						break;
 					default:
 						System.out.println("Invalid command");
@@ -687,31 +693,21 @@ public class Digraph extends JPanel implements MouseMotionListener,
 				try {
 					node1 = Integer.parseInt(st.nextToken());
 					node2 = Integer.parseInt(st.nextToken());
-					if (st.hasMoreTokens())
+					if (st.hasMoreTokens()) {
 						break;
+					}
 					contract(node1, node2);
 				} catch (Exception e) {
 					System.out.println("Invalid command");
 				}
 				break;
 			case "clear":
-				if (!st.hasMoreTokens())
+				if (!st.hasMoreTokens()) {
 					clear();
-				else
-					System.out.println("Invalid command");
-				break;
-			// yue added
-			case "out":
-				try {
-					node1 = Integer.parseInt(st.nextToken());
-					if (st.hasMoreTokens())
-						break;
-					containOutEdges(node1);
-				} catch (Exception e) {
+				} else {
 					System.out.println("Invalid command");
 				}
 				break;
-			// added end
 			default:
 				System.out.println("Invalid command");
 				break;
@@ -740,10 +736,11 @@ public class Digraph extends JPanel implements MouseMotionListener,
 		List<Integer> outNeighbours;
 
 		for (Integer i : nodeSet) {
-			if (selectedNode == i)
+			if (selectedNode == i) {
 				nodeList.get(i).draw(g, Color.RED);
-			else
+			} else {
 				nodeList.get(i).draw(g, Color.BLACK);
+			}
 			outNeighbours = data.get(i);
 			for (int j = 0; j < outNeighbours.size(); j++) {
 				drawEdge(i, outNeighbours.get(j), g, Color.BLACK, Color.BLUE);
@@ -827,9 +824,9 @@ public class Digraph extends JPanel implements MouseMotionListener,
 			}
 		}
 		if (onNode) {
-			if (selectedNode == -1)
+			if (selectedNode == -1) {
 				selectedNode = clicked;
-			else {
+			} else {
 				if (clicked.equals(selectedNode)) {
 					selectedNode = -1;
 				} else {
@@ -840,8 +837,9 @@ public class Digraph extends JPanel implements MouseMotionListener,
 		}
 		if (!onNode) {
 			int newNode = 0;
-			while (nodeSet.contains((Integer) newNode))
+			while (nodeSet.contains((Integer) newNode)) {
 				newNode++;
+			}
 			add((Integer) newNode);
 			selectedNode = newNode;
 		}
@@ -876,7 +874,7 @@ public class Digraph extends JPanel implements MouseMotionListener,
 	}
 
 	// An inner class storing information regarding the visualisation of a node
-	private class Node {
+	protected class Node {
 
 		public int xpos;
 		public int ypos;
@@ -965,10 +963,12 @@ public class Digraph extends JPanel implements MouseMotionListener,
 			xpos = xpos - 2 * dirX;
 			ypos = ypos - 2 * dirY;
 
-			if (xpos < 50 || xpos > 360)
+			if (xpos < 50 || xpos > 360) {
 				dirX = (-1) * dirX;
-			if (ypos < 50 || ypos > 360)
+			}
+			if (ypos < 50 || ypos > 360) {
 				dirY = (-1) * dirY;
+			}
 
 		}
 	}
@@ -977,9 +977,10 @@ public class Digraph extends JPanel implements MouseMotionListener,
 	// testing the data structure
 	public void demo() {
 
-		for (Integer i : nodeSet)
+		for (Integer i : nodeSet) {
 			System.out.println("Node " + i + " indegree: " + indegree(i)
 					+ " outdegree: " + outdegree(i));
+		}
 		System.out.println("Size of the digraph: " + graphSize());
 		System.out.println("Order of the digraph: " + graphOrder());
 
@@ -1044,8 +1045,9 @@ public class Digraph extends JPanel implements MouseMotionListener,
 				for (Integer node : nodeSet) {
 					nodeList.get(node).move();
 				}
-				if (i > 50)
+				if (i > 50) {
 					remove((i + 1) / 50);
+				}
 				repaint();
 			}
 
@@ -1057,8 +1059,9 @@ public class Digraph extends JPanel implements MouseMotionListener,
 
 			for (int i = 0; i < 10; i++) {
 				add(i);
-				if (i > 0)
+				if (i > 0) {
 					addEdge(i, i - 1);
+				}
 			}
 			addEdge(0, 9);
 
@@ -1069,8 +1072,9 @@ public class Digraph extends JPanel implements MouseMotionListener,
 				for (Integer node : nodeSet) {
 					nodeList.get(node).move();
 				}
-				if (i > 50)
+				if (i > 50) {
 					contract((i + 1) % 500 / 50, 0);
+				}
 				repaint();
 			}
 
@@ -1095,8 +1099,9 @@ public class Digraph extends JPanel implements MouseMotionListener,
 				for (Integer node : nodeSet) {
 					nodeList.get(node).move();
 				}
-				if (i > 50)
+				if (i > 50) {
 					remove((i + 1) % 500 / 50);
+				}
 				repaint();
 			}
 
@@ -1121,43 +1126,17 @@ public class Digraph extends JPanel implements MouseMotionListener,
 		frame.setVisible(true);
 
 		// g.demo(); // Do a little play with the graph
-
 		// Expected Print Output:
-		//
-		// Node 0 indegree: 0 outdegree: 2
-		// Node 1 indegree: 1 outdegree: 1
-		// Node 2 indegree: 2 outdegree: 0
-		// Size of the digraph: 3
-		// Order of the digraph: 3
-		// -------------------------
-		// 0 1 2
-		// 0 0 1 1
-		// 1 0 0 1
-		// 2 0 0 0
-		// -------------------------
-		// ---------
-		// 0: 1 2
-		// 1: 2
-		// 2:
-		// ---------
-		// Universal Source found: 0
-		// Universal Sink found: 2
-		// Transpose
-		// -------------------------
-		// / 0 1 2
-		// 0 0 0 0
-		// 1 1 0 0
-		// 2 1 1 0
-		// -------------------------
-		// Underlying Graph
-		// -------------------------
-		// / 0 1 2
-		// 0 0 1 1
-		// 1 1 0 1
-		// 2 1 1 0
-		// -------------------------
-		//
-
+		/**
+		 * Node 0 indegree: 0 outdegree: 2 Node 1 indegree: 1 outdegree: 1 Node
+		 * 2 indegree: 2 outdegree: 0 Size of the digraph: 3 Order of the
+		 * digraph: 3 ------------------------- 0 1 2 0 0 1 1 1 0 0 1 2 0 0 0
+		 * ------------------------- --------- 0: 1 2 1: 2 2: ---------
+		 * Universal Source found: 0 Universal Sink found: 2 Transpose
+		 * ------------------------- 0 1 2 0 0 0 0 1 1 0 0 2 1 1 0
+		 * ------------------------- Underlying Graph -------------------------
+		 * 0 1 2 0 0 1 1 1 1 0 1 2 1 1 0 -------------------------
+		 */
 	}
 
 }
