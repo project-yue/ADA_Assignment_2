@@ -73,7 +73,7 @@ public class WGraph extends JPanel implements MouseMotionListener,
 
 	// The Constructor
 	public WGraph() {
-
+		setSize(450, 450);
 		data = new HashMap<Integer, HashMap<Integer, Double>>();
 		NODE_LIST = new HashMap<Integer, Node>();
 		nodeSet = data.keySet();
@@ -89,7 +89,7 @@ public class WGraph extends JPanel implements MouseMotionListener,
 		addMouseMotionListener(this);
 		addMouseListener(this);
 		tf = new JTextField();
-		tf.setText("load SampleGraph.dat");
+		tf.setText("load q2.dat");
 		tf.addActionListener(this);
 		setLayout(new BorderLayout());
 		add(panel, BorderLayout.NORTH);

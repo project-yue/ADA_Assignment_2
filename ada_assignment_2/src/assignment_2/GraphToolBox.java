@@ -4,11 +4,8 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.Stack;
 
-import assignment_2.color.ColorProperty;
 import assignment_2.pqs.HeapMinimumPriorityQueue;
 import assignment_2.pqs.WeightNode;
 
@@ -22,63 +19,15 @@ public class GraphToolBox {
 
 	private static HashMap<Integer, Integer> leastEdges;
 	private static HashMap<Integer, NodeDistance> distances;
-	private static HeapMinimumPriorityQueue<NodeDistance> priortyQueue;
+	private static HeapMinimumPriorityQueue<NodeDistance> priorityQueue;
+	// private static PriorityQueue<NodeDistance> priorityQueue;
 	private static ArrayList<String> shortestPaths;
-
-	// public static void dijkstra(WGraph wgraph, Integer sourceNode,
-	// Integer sinkNode, boolean whetherPlot) {
-	// leastEdges = new HashMap<>();
-	// distances = new HashMap<>();
-	// priortyQueue = new HeapMinimumPriorityQueue<>();
-	// for (Integer node : wgraph.nodeSet) {
-	// NodeDistance nodeDistance = new NodeDistance();
-	// if (node != sourceNode) {
-	// leastEdges.put(node, null);
-	// nodeDistance.node = node;
-	// nodeDistance.distance = Double.POSITIVE_INFINITY;
-	// } else {
-	// leastEdges.put(node, sourceNode);
-	// nodeDistance.node = sourceNode;
-	// nodeDistance.distance = 0.0;
-	// }
-	// distances.put(node, nodeDistance);
-	// priortyQueue.insert(nodeDistance);
-	// }
-	//
-	// System.out.println(priortyQueue.minimum().node + " "
-	// + priortyQueue.minimum().distance);
-	// Integer currentSource = priortyQueue.getMinimumum().node;
-	// while (priortyQueue.size() > 0) {
-	// for (Integer adjNode : wgraph.data.get(currentSource).keySet()) {
-	// double distanceToAdjNode = distances.get(currentSource).distance
-	// + wgraph.data.get(currentSource).get(adjNode);
-	// // relax all incident edges from a node
-	// if (distanceToAdjNode < distances.get(adjNode).distance) {
-	// // update distance from and least edge if ncessary
-	// NodeDistance nodeDistance = distances.get(adjNode);
-	// nodeDistance.distance = distanceToAdjNode;
-	// priortyQueue.heapify();
-	// leastEdges.put(adjNode, currentSource);
-	// }
-	// }
-	// currentSource = priortyQueue.getMinimumum().node;
-	// System.out.println(priortyQueue.minimum().node + " "
-	// + priortyQueue.minimum().distance);
-	// }
-	//
-	// System.out.println("The distance from node " + sourceNode + " to "
-	// + sinkNode + " is " + distances.get(sinkNode).distance
-	// + "\nDijkstra path:\n");
-	// if (whetherPlot)
-	// System.out.println(showPathFromSource(sourceNode, sinkNode, wgraph,
-	// whetherPlot));
-	// }
 
 	public static void dijkstra(WGraph wgraph, Integer sourceNode,
 			Integer sinkNode) {
 		leastEdges = new HashMap<>();
 		distances = new HashMap<>();
-		priortyQueue = new HeapMinimumPriorityQueue<>();
+		priorityQueue = new HeapMinimumPriorityQueue<>();
 		for (Integer node : wgraph.nodeSet) {
 			NodeDistance nodeDistance = new NodeDistance();
 			if (node != sourceNode) {
@@ -91,10 +40,10 @@ public class GraphToolBox {
 				nodeDistance.distance = 0.0;
 			}
 			distances.put(node, nodeDistance);
-			priortyQueue.insert(nodeDistance);
+			priorityQueue.insert(nodeDistance);
 		}
-		Integer currentSource = priortyQueue.getMinimumum().node;
-		while (priortyQueue.size() > 0) {
+		Integer currentSource = priorityQueue.getMinimumum().node;
+		while (priorityQueue.size() > 0) {
 			for (Integer adjNode : wgraph.data.get(currentSource).keySet()) {
 				double distanceToAdjNode = distances.get(currentSource).distance
 						+ wgraph.data.get(currentSource).get(adjNode);
@@ -103,11 +52,11 @@ public class GraphToolBox {
 					// update distance from and least edge if ncessary
 					NodeDistance nodeDistance = distances.get(adjNode);
 					nodeDistance.distance = distanceToAdjNode;
-					priortyQueue.heapify();
+					priorityQueue.heapify();
 					leastEdges.put(adjNode, currentSource);
 				}
 			}
-			currentSource = priortyQueue.getMinimumum().node;
+			currentSource = priorityQueue.getMinimumum().node;
 		}
 		// for (Integer node : distances.keySet()) {
 		// System.out.println("Node " + node + " shortest distance from "
@@ -167,7 +116,8 @@ public class GraphToolBox {
 	private static void initializeDistances(WGraph wgraph, Integer sourceNode) {
 		leastEdges = new HashMap<>();
 		distances = new HashMap<>();
-		priortyQueue = new HeapMinimumPriorityQueue<>();
+		// priorityQueue = new PriorityQueue<>();
+		priorityQueue = new HeapMinimumPriorityQueue<>();
 		for (Integer node : wgraph.nodeSet) {
 			NodeDistance nodeDistance = new NodeDistance();
 			if (node != sourceNode) {
@@ -180,10 +130,13 @@ public class GraphToolBox {
 				nodeDistance.distance = 0.0;
 			}
 			distances.put(node, nodeDistance);
-			priortyQueue.insert(nodeDistance);
+			// priorityQueue.add(nodeDistance);
+			priorityQueue.insert(nodeDistance);
 		}
-		Integer currentSource = priortyQueue.getMinimumum().node;
-		while (priortyQueue.size() > 0) {
+		// Integer currentSource = priorityQueue.poll().node;
+		Integer currentSource = priorityQueue.getMinimumum().node;
+		while (priorityQueue.size() > 0) {
+			// while (priortyQueue.size() > 0) {
 			for (Integer adjNode : wgraph.data.get(currentSource).keySet()) {
 				double distanceToAdjNode = distances.get(currentSource).distance
 						+ wgraph.data.get(currentSource).get(adjNode);
@@ -192,11 +145,12 @@ public class GraphToolBox {
 					// update distance from and least edge if ncessary
 					NodeDistance nodeDistance = distances.get(adjNode);
 					nodeDistance.distance = distanceToAdjNode;
-					priortyQueue.heapify();
+					// priortyQueue.heapify();
 					leastEdges.put(adjNode, currentSource);
 				}
 			}
-			currentSource = priortyQueue.getMinimumum().node;
+			// currentSource = priorityQueue.poll().node;
+			currentSource = priorityQueue.getMinimumum().node;
 		}
 	}
 
@@ -256,6 +210,7 @@ public class GraphToolBox {
 		int tempNode = getPreviousNode(target);
 		while (tempNode != sourceNode) {// may be not connected by the source
 			stack.push(tempNode);
+			System.out.println("visit " + tempNode);
 			tempNode = getPreviousNode(tempNode);
 		}
 		stack.push(sourceNode);

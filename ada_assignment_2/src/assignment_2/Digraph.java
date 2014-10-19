@@ -57,7 +57,7 @@ public class Digraph extends JPanel implements MouseMotionListener,
 	protected Set<Integer> nodeSet;
 
 	// The textfield used for user to specify commands
-	protected JTextField tf;
+	public JTextField tf;
 
 	// The Constructor
 	public Digraph() {
@@ -79,7 +79,7 @@ public class Digraph extends JPanel implements MouseMotionListener,
 		add(tf, BorderLayout.SOUTH);
 		moveNode = -1; // Initial values of moveNode is -1
 		selectedNode = -1; // Initial values of moveNode is -1
-
+		setMinimumSize(new Dimension(450, 450));
 	}
 
 	/**

@@ -14,13 +14,23 @@ public class WeightNode implements Comparable<WeightNode> {
 
 	@Override
 	public int compareTo(WeightNode o) {
-		if (this.weight > o.weight)
+		if (this.weight < o.weight)
 			return 1;
-		else if (this.weight < o.weight)
+		else if (this.weight > o.weight)
 			return -1;
 		else
 			return 0;
 	}
+
+	// @Override
+	// public int compareTo(WeightNode o) {
+	// if (this.weight > o.weight)
+	// return 1;
+	// else if (this.weight < o.weight)
+	// return -1;
+	// else
+	// return 0;
+	// }
 
 	public String toString() {
 		return from + " " + to;

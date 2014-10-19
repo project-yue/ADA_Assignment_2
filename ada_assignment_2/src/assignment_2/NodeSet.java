@@ -1,13 +1,11 @@
 package assignment_2;
 
-import java.awt.Color;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
-import assignment_2.color.ColorProperty;
 import assignment_2.pqs.WeightNode;
 
 /**
@@ -162,7 +160,4 @@ public class NodeSet {
 		System.out.println(set1);
 	}
 
-	public Color getColor(ColorProperty cp) {
-		return cp.colors.get(this.colorIndex);
-	}
 }
