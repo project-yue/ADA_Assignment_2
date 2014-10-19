@@ -14,7 +14,7 @@ import assignment_2.pqs.WeightNode;
  * @author mk-19
  *
  */
-public class NodeSet {
+public class GraphSet {
 
 	public Set<WeightNode> nodePairs;
 	public Set<Integer> nodeSet;
@@ -22,7 +22,7 @@ public class NodeSet {
 	public int colorIndex;
 	public HashMap<Integer, ArrayList<Integer>> edgesMap;
 
-	public NodeSet(WeightNode numberPair, int colorIndex) {
+	public GraphSet(WeightNode numberPair, int colorIndex) {
 		this.edgesMap = new HashMap<>();
 		this.nodePairs = new HashSet<>();
 		this.nodeSet = new HashSet<>();
@@ -32,10 +32,18 @@ public class NodeSet {
 		this.colorIndex = colorIndex;
 	}
 
-	public NodeSet() {
+	public GraphSet() {
 		this.edgesMap = new HashMap<>();
 		this.nodePairs = new HashSet<>();
 		this.nodeSet = new HashSet<>();
+	}
+
+	public WeightNode obtainWeight(Integer from, Integer to) {
+		for (WeightNode wn : nodePairs) {
+			if (from == wn.from && to == wn.to)
+				return wn;
+		}
+		return null;
 	}
 
 	private void addNodes(WeightNode nodePair) {
@@ -146,9 +154,9 @@ public class NodeSet {
 		WeightNode wn1 = new WeightNode(0, 1, 1.0);
 		WeightNode wn2 = new WeightNode(3, 2, 1.0);
 		WeightNode wn3 = new WeightNode(0, 3, 1.0);
-		NodeSet set1 = new NodeSet(wn1, 0);
-		NodeSet set2 = new NodeSet(wn2, 1);
-		NodeSet set3 = new NodeSet(wn3, 2);
+		GraphSet set1 = new GraphSet(wn1, 0);
+		GraphSet set2 = new GraphSet(wn2, 1);
+		GraphSet set3 = new GraphSet(wn3, 2);
 
 		// ArrayList<Integer> intersects = set1.intersect(set3);
 		// if (intersects.size() > 0) {

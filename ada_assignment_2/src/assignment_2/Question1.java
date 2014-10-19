@@ -917,71 +917,10 @@ public class Question1 extends Digraph implements ActionListener {
 		JFrame frame = new JFrame("Assignment 2 Question 1");
 		frame.setMinimumSize(new Dimension(450, 450));
 
-		initMenu(frame, g);
-
-		// frame.setSize(450, 450);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setLocation(0, 0);
 		frame.getContentPane().add(g);
 		frame.setVisible(true);
 	}
 
-	private static void initMenu(JFrame frame, Digraph dg) {
-
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setLocationRelativeTo(null);
-		JMenuBar menuBar = new JMenuBar();
-		// CustomizedMenuItem menuBar = new CustomizedMenuItem();
-		// menuBar.addFrame(frame);
-		frame.setJMenuBar(menuBar);
-
-		JMenu mnFile = new JMenu("File");
-		menuBar.add(mnFile);
-
-		CustomizedMenuItem mntmDiGraph = new CustomizedMenuItem("Digraph");
-		mntmDiGraph.addGraphPanel(dg);
-		mntmDiGraph.addFrame(frame);
-		mntmDiGraph.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				CustomizedMenuItem cmi = (CustomizedMenuItem) e.getSource();
-				cmi.frame.remove((WGraph) cmi.panel);
-				cmi.repaint();
-				Question1 q1 = new Question1();
-				cmi.frame.add(q1);
-				cmi.panel = q1;
-				cmi.repaint();
-				cmi.frame.pack();
-			}
-		});
-		mnFile.add(mntmDiGraph);
-
-		CustomizedMenuItem mntmWGraph = new CustomizedMenuItem("WGraph");
-		mntmWGraph.addGraphPanel(dg);
-		mntmWGraph.addFrame(frame);
-		mntmWGraph.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				CustomizedMenuItem cmi = (CustomizedMenuItem) e.getSource();
-				Question1 q1 = ((Question1) cmi.panel);
-				cmi.frame.remove(q1);
-				cmi.frame.repaint();
-				WGraph wgraph = new WGraph();
-				cmi.frame.add(wgraph);
-				cmi.panel = wgraph;
-				// cmi.frame.setMinimumSize(new Dimension(450, 450));
-				cmi.repaint();
-				cmi.frame.pack();
-			}
-		});
-		mnFile.add(mntmWGraph);
-
-		CustomizedMenuItem mntmExit = new CustomizedMenuItem("Exit");
-		mnFile.add(mntmExit);
-		mntmExit.addFrame(frame);
-		mntmExit.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				CustomizedMenuItem cmi = (CustomizedMenuItem) e.getSource();
-				cmi.frame.dispose();
-			}
-		});
-	}
 }
