@@ -46,6 +46,8 @@ public class AssignmentTwoFrame extends JFrame {
 	 * Launch the application.
 	 */
 	public static void main(String[] args) {
+		Splash ss = new Splash();
+		ss.dispose();
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {

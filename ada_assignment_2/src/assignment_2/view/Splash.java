@@ -1,4 +1,4 @@
-package assignment_2;
+package assignment_2.view;
 
 import java.awt.*;
 import javax.swing.ImageIcon;
@@ -13,7 +13,9 @@ public class Splash extends JWindow {
 	JPanel contentPane;
 
 	public Splash() {
-		image = new ImageIcon((getClass().getResource("yolo.png"))).getImage();
+		image = new ImageIcon(
+				(getClass().getResource("/assignment_2/view/yolo.png")))
+				.getImage();
 		icon = new ImageIcon(image);
 		enableEvents(AWTEvent.WINDOW_EVENT_MASK);
 		try {

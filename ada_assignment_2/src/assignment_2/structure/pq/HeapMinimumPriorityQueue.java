@@ -1,4 +1,4 @@
-package assignment_2.pqs;
+package assignment_2.structure.pq;
 
 import java.util.ArrayList;
 

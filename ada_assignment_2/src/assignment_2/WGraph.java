@@ -25,8 +25,8 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-import assignment_2.pqs.HeapMinimumPriorityQueue;
-import assignment_2.pqs.WeightNode;
+import assignment_2.structure.pq.HeapMinimumPriorityQueue;
+import assignment_2.structure.pq.WeightNode;
 
 /**
  * This class implements the weighted directed graph ADT and a simple GUI for

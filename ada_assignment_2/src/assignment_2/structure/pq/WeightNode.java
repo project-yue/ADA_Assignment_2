@@ -1,4 +1,4 @@
-package assignment_2.pqs;
+package assignment_2.structure.pq;
 
 public class WeightNode implements Comparable<WeightNode> {
 

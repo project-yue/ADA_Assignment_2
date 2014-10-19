@@ -6,8 +6,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Stack;
 
-import assignment_2.pqs.HeapMinimumPriorityQueue;
-import assignment_2.pqs.WeightNode;
+import assignment_2.structure.pq.HeapMinimumPriorityQueue;
+import assignment_2.structure.pq.WeightNode;
+import assignment_2.structure.set.GraphSet;
 
 /**
  * Inspired by Mahmoud as he created a draft for us to work on.

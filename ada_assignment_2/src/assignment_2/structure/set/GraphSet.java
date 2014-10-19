@@ -1,4 +1,4 @@
-package assignment_2;
+package assignment_2.structure.set;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -6,7 +6,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
-import assignment_2.pqs.WeightNode;
+import assignment_2.structure.pq.WeightNode;
 
 /**
  * created a node set that contains all the valid node pair for edges as a group
