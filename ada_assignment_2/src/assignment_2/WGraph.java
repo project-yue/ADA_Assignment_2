@@ -61,7 +61,7 @@ public class WGraph extends JPanel implements MouseMotionListener,
 	// This set is the key set of data
 	public Set<Integer> nodeSet;
 	// The textfield used for user to specify commands
-	private JTextField tf;
+	public JTextField tf;
 
 	// Added weight PQ and set for mst
 	public HeapMinimumPriorityQueue<WeightNode> weightPQ;
@@ -70,6 +70,7 @@ public class WGraph extends JPanel implements MouseMotionListener,
 
 	//
 	public double[][] floydWarshall;
+	public double[][] bellmenFord;
 
 	// The Constructor
 	public WGraph() {
@@ -270,10 +271,7 @@ public class WGraph extends JPanel implements MouseMotionListener,
 		// the adjacency matrix of the digraph, where the node indices in
 		// the matrix are indicated by the labels HashMap
 		String[][] adjMatrix = new String[n][n];
-		// this.floydWarshall = new double[n][n];
 		HashMap<Integer, Double> list;
-		// int row = 0;
-		// int column = 0;
 		int index = 0;
 
 		for (Integer i : nodeSet) {
@@ -316,6 +314,74 @@ public class WGraph extends JPanel implements MouseMotionListener,
 
 	}
 
+	// /**
+	// * This method prints out the adjacency matrix of the graph You need to
+	// * complete this method
+	// *
+	// * The method computes the following data structure: 1. a HashMap labels
+	// * which associates each number between 0 and n-1 a unique node label 2. a
+	// * boolean nxn matrix adjMatrix storing the adjacency matrix where: the
+	// ith
+	// * row/column corresponds to the node with label labels.get(i)
+	// *
+	// * The method then prints out the adjacency matrix To the left and on top
+	// of
+	// * the matrix, the method also prints out the node label which corresponds
+	// * to each row and column
+	// */
+	// public void bellmanFord() {
+	// // n is the order of the graph
+	// int n = graphOrder();
+	//
+	// // the HashMap associates an index in [0..n-1] with a node label
+	// HashMap<Integer, Integer> labels = new HashMap<Integer, Integer>();
+	//
+	// // the adjacency matrix of the digraph, where the node indices in
+	// // the matrix are indicated by the labels HashMap
+	// String[][] adjMatrix = new String[n][n];
+	// HashMap<Integer, Double> list;
+	// int index = 0;
+	//
+	// for (Integer i : nodeSet) {
+	// labels.put((Integer) index, (Integer) i);
+	// index++;
+	// }
+	// for (int i = 0; i < n; i++) {
+	// list = data.get(labels.get((Integer) i));
+	// for (int j = 0; j < n; j++) {
+	// if (list.containsKey(labels.get((Integer) j))) {
+	// adjMatrix[i][j] = "" + list.get(labels.get((Integer) j));
+	// } else {
+	// adjMatrix[i][j] = "#";
+	// }
+	// }
+	// }
+	//
+	// for (int i = 0; i <= 8 * n; i++) {
+	// System.out.print("-");
+	// }
+	// System.out.print('\n');
+	//
+	// System.out.print("" + '\t');
+	// for (int i = 0; i < n; i++) {
+	// System.out.print("" + labels.get((Integer) i) + '\t');
+	// }
+	// System.out.print("" + '\n');
+	//
+	// for (int i = 0; i < n; i++) {
+	// System.out.print("" + labels.get((Integer) i));
+	// for (int j = 0; j < n; j++) {
+	// System.out.print('\t' + adjMatrix[i][j]);
+	// }
+	// System.out.print("" + '\n');
+	// }
+	// for (int i = 0; i <= 8 * n; i++) {
+	// System.out.print("-");
+	// }
+	// System.out.print('\n');
+	//
+	// }
+
 	public void printFloydWarshall() {
 		// n is the order of the graph
 		int n = graphOrder();
@@ -343,7 +409,6 @@ public class WGraph extends JPanel implements MouseMotionListener,
 				}
 			}
 		}
-		// this.floydWarshall = computeFloydWarshall(this.floydWarshall);
 		this.floydWarshall = floydWarshall(this.floydWarshall);
 		for (int i = 0; i <= 8 * n; i++) {
 			System.out.print("-");
@@ -520,10 +585,6 @@ public class WGraph extends JPanel implements MouseMotionListener,
 				try {
 					opt = st.nextToken();
 					opt = opt.toLowerCase();
-					if (st.hasMoreTokens()) {
-						System.out.println("Invalid command");
-						break;
-					}
 					switch (opt) {
 					case "order":
 						System.out.println("Order of the digraph: "
@@ -532,8 +593,8 @@ public class WGraph extends JPanel implements MouseMotionListener,
 					case "matrix":
 						printMatrix();
 						break;
-					case "floyd-warshall":
-						printFloydWarshall();
+					case "bellmanford":
+						GraphToolBox.performBellmanFord(this);
 						break;
 					default:
 						System.out.println("Invalid command");

@@ -2,24 +2,20 @@ package assignment_2.view;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.EventQueue;
+import java.awt.MenuItem;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.BoxLayout;
-import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.border.LineBorder;
 
@@ -27,6 +23,7 @@ import assignment_2.Question1;
 import assignment_2.WGraph;
 
 /**
+ * Singleton pattern on the two questions.
  * 
  * @author Yue
  * @version 1.1
@@ -73,6 +70,13 @@ public class AssignmentTwoFrame extends JFrame {
 		mnNewMenu = new JMenu("Help");
 		mnNewMenu.setHorizontalAlignment(SwingConstants.CENTER);
 		menuBar.add(mnNewMenu);
+		JMenuItem mntnHelpMenuInstruction = new JMenuItem("Instructions");
+		mntnHelpMenuInstruction.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				displayInstructions();
+			}
+		});
 		mntmHelpMenuItem = new JMenuItem("Version");
 		mntmHelpMenuItem.addActionListener(new ActionListener() {
 			@Override
@@ -108,7 +112,15 @@ public class AssignmentTwoFrame extends JFrame {
 	}
 
 	private void displayInfo() {
-		JOptionPane.showMessageDialog(this, "This is a View class that"
-				+ " applies Singleton pattern.");
+		JOptionPane.showMessageDialog(this,
+				"ADA Assignment 2:  Graph Theory \n"
+						+ "                              by Ximei & Yue");
+	}
+
+	private void displayInstructions() {
+
+		JOptionPane.showMessageDialog(this, "dfs 0\n"
+				+ "bfs 0\niscycle 0\nlinearize\nscc 0\n"
+				+ "distance 0 4\nisEulerian\nisBipartite");
 	}
 }

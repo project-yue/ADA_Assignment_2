@@ -1,21 +1,26 @@
 package assignment_2;
 
-import java.awt.*;
-import java.awt.event.*;
+import java.awt.BasicStroke;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 import java.awt.geom.Line2D;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.io.IOException;
-
-import java.util.ArrayList;
-
-import java.util.LinkedList;
-import java.util.StringTokenizer;
-import java.util.List;
-import java.util.Random;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Set;
+import java.util.StringTokenizer;
+
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
@@ -57,7 +62,7 @@ public class Digraph extends JPanel implements MouseMotionListener,
 	protected Set<Integer> nodeSet;
 
 	// The textfield used for user to specify commands
-	public JTextField tf;
+	protected JTextField tf;
 
 	// The Constructor
 	public Digraph() {
@@ -79,7 +84,7 @@ public class Digraph extends JPanel implements MouseMotionListener,
 		add(tf, BorderLayout.SOUTH);
 		moveNode = -1; // Initial values of moveNode is -1
 		selectedNode = -1; // Initial values of moveNode is -1
-		setMinimumSize(new Dimension(450, 450));
+
 	}
 
 	/**
@@ -425,6 +430,19 @@ public class Digraph extends JPanel implements MouseMotionListener,
 				}
 			}
 		}
+	}
+
+	public Digraph gReverse() {
+		int n = graphOrder();
+		Digraph reversedGraph = new Digraph();
+
+		for (Integer i : nodeSet) {
+			List<Integer> list = data.get(i);
+			for (int w : list) {
+				reversedGraph.addEdge(w, i);
+			}
+		}
+		return reversedGraph;
 	}
 
 	/**
@@ -971,6 +989,7 @@ public class Digraph extends JPanel implements MouseMotionListener,
 			}
 
 		}
+
 	}
 
 	// A demo program that performs several graph updates and queries for

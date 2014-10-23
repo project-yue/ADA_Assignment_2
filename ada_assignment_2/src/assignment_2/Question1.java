@@ -5,8 +5,6 @@
 package assignment_2;
 
 import java.awt.Color;
-import java.awt.Component;
-import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -22,9 +20,6 @@ import java.util.StringTokenizer;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import javax.swing.JFrame;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
 
 /**
  *
@@ -42,14 +37,15 @@ public class Question1 extends Digraph implements ActionListener {
 	private Map<Integer, Integer> prevList; // prev timer list of all nodes
 	private Map<Integer, Integer> postList;// post timer list of all nodes
 	private Integer firstCycleNode; // record the 1st cycle point when searching
+
 	private boolean isCycle = false; // cycle flag
 	private Stack<Integer> stack; // used in dfs
-	private ArrayList<List<SelectedEdge>> scc; // scc is used for record the
+	private ArrayList<ArrayList<Integer>> scc; // scc is used for record the
 												// each SCC with cycle
-	private Map<Integer, Integer> standAloneSCC; // stand alone SCC
-	private Integer sccNumber; // number of SCC with cycle
-	private Integer standAloneNum; // number of stand alone SCC
-	private static boolean sccEnabled = false; // scc enabled
+	private Integer sccNum;
+	private ArrayList<Integer> sccList;
+	private boolean sccEnabled;
+
 	private HashMap<Integer, Integer> dist; // distance of each node
 	private Color[] colorArray = { Color.RED, Color.MAGENTA, Color.PINK,
 			Color.GREEN, Color.CYAN, Color.BLACK, Color.BLUE, Color.YELLOW,
@@ -64,6 +60,7 @@ public class Question1 extends Digraph implements ActionListener {
 	private Queue<Edge> trail; // record the path of Eulerian trail
 	private ArrayList redList; // one color node set in the bipartite
 	private ArrayList blueList;// the 2nd color node set in the bipartite
+	Question1 reverseGraph;
 
 	public Question1() {
 		super();
@@ -83,7 +80,7 @@ public class Question1 extends Digraph implements ActionListener {
 		for (Integer node : nodeSet) {
 			visited.put(node, Boolean.FALSE);
 		}
-
+		System.out.println("The bfs parenthesis is:");
 		bfs(source);
 		source = getNextUnvistedNode();
 		while (source != null) {
@@ -123,11 +120,11 @@ public class Question1 extends Digraph implements ActionListener {
 	private void performDFS(Integer source) {
 		visited = new HashMap<>();
 		selectedEdges = new ArrayList<>();
-
+		stack = new Stack<>();
 		for (Integer node : nodeSet) {
 			visited.put(node, Boolean.FALSE);
 		}
-
+		System.out.println("The DFS parenthesis is:");
 		recursiveDFS(source);
 		source = getNextUnvistedNode();
 		while (source != null) {
@@ -148,6 +145,7 @@ public class Question1 extends Digraph implements ActionListener {
 			}
 		}
 		System.out.print(node + ")");
+		stack.push(node);
 	}
 
 	// obtains the next unvisted node
@@ -228,143 +226,85 @@ public class Question1 extends Digraph implements ActionListener {
 	 * @param source
 	 */
 	private void performSCC(Integer source) {
-		visited = new HashMap<>();
-		selectedEdges = new ArrayList<>();
-		stack = new Stack<>();
-		for (Integer node : nodeSet) {
-			visited.put(node, Boolean.FALSE);
-		}
-		recursiveSCC(source);
-		source = getNextUnvistedNode();
-		while (source != null) {
-			recursiveSCC(source);
-			source = getNextUnvistedNode();
-		}
-		System.out.println();
-		Integer lastNode = stack.peek();
-		transpose();
+		reverseGraph.performDFS(source);
+		reverseGraph.transpose();
+		reverseGraph.visited = new HashMap<>();
+
+		reverseGraph.selectedEdges = new ArrayList<>();
+
 		scc = new ArrayList();
-		standAloneSCC = new HashMap<>();
-		performTansposeDFS(lastNode);
-
-	}
-
-	/**
-	 * SCC check using depth first search from a node
-	 *
-	 * @param node
-	 */
-	// depth first search from a node
-	private void recursiveSCC(Integer node) {
-		visited.put(node, Boolean.TRUE);
-		for (Integer adjacentNode : data.get(node)) {
-			if (!visited.get(adjacentNode)) {
-				selectedEdges.add(new SelectedEdge(node, adjacentNode));
-				recursiveSCC(adjacentNode);
-			}
-		}
-		stack.push(node);
-	}
-
-	/**
-	 * perform dfs research based on G^T
-	 *
-	 * @param source
-	 */
-	private void performTansposeDFS(Integer source) {
-		visited = new HashMap<>();
+		sccList = new ArrayList();
+		sccNum = 0;
 		selectedEdges = new ArrayList<>();
-		prevList = new HashMap<>();
-		postList = new HashMap<>();
-		timer = 0;
-		sccNumber = 0;
-		standAloneNum = 0;
-		for (Integer node : nodeSet) {
-			visited.put(node, Boolean.FALSE);
-			prevList.put(node, -1);
-			postList.put(node, -1);
+
+		for (Integer node : reverseGraph.nodeSet) {
+			reverseGraph.visited.put(node, Boolean.FALSE);
 		}
-		recursiveTansposeDFS(source);
-		postEdgeProcess();
-		while (stack.size() > 0) {
-			Integer lastNode = stack.peek();
-			recursiveTansposeDFS(lastNode);
-			postEdgeProcess();
+		ArrayList<Integer> localList = new ArrayList();
+		Integer startNode = reverseGraph.stack.peek();
+		recursiveSCC(reverseGraph, startNode);
+		if (sccList.size() > 0) {
+			for (int i : sccList) {
+				localList.add(i);
+			}
 		}
+		scc.add(sccNum++, localList);
+		for (int i : sccList) {
+			reverseGraph.remove(i);
+		}
+
+		while (reverseGraph.stack.size() > 0) {
+			sccList.clear();
+			startNode = reverseGraph.stack.peek();
+			recursiveSCC(reverseGraph, startNode);
+			ArrayList<Integer> lst = new ArrayList();
+			if (sccList.size() > 0) {
+				for (int i : sccList) {
+					lst.add(i);
+				}
+			}
+			scc.add(sccNum++, lst);
+			for (int i : sccList) {
+				reverseGraph.remove(i);
+			}
+		}
+		System.out.println("The SCCs are: ");
+		if (scc.size() != 0) {
+			List<Integer> xList;
+
+			for (int x = 0; x < scc.size(); x++) {
+				xList = scc.get(x);
+				System.out.print("{");
+				for (int i = 0; i < xList.size() - 1; i++) {
+					System.out.print(xList.get(i) + " , ");
+				}
+				System.out.print(xList.get(xList.size() - 1));
+				System.out.print("}");
+			}
+			System.out.println();
+		}
+
 	}
 
 	/**
-	 * SCC check using depth first search from a node on G^T
+	 * SCC check using depth first search from a node on G
 	 *
 	 * @param node
 	 */
-	private void recursiveTansposeDFS(Integer node) {
-		visited.put(node, Boolean.TRUE);
-		prevList.put(node, timer++);
-		if (outdegree(node) == 0) {
-			standAloneSCC.put(standAloneNum++, node);
-			List<Integer> list;
-			for (Integer j : nodeSet) {
-				if (j != node) {
-					list = data.get((Integer) j);
-					if (list.contains((Integer) node)) {
-						removeEdge(j, node);
-					}
-				}
-			}
-		} else {
-			for (Integer adjacentNode : data.get(node)) {
-				if (!visited.get(adjacentNode)) {
-					selectedEdges.add(new SelectedEdge(node, adjacentNode));
-					recursiveTansposeDFS(adjacentNode);
-				} else if ((prevList.get(node) > prevList.get(adjacentNode))
-						&& postList.get(adjacentNode) == -1) {
-					selectedEdges.add(new SelectedEdge(node, adjacentNode));
+	private void recursiveSCC(Question1 graph, Integer node) {
+		graph.visited.put(node, Boolean.TRUE);
 
+		if (graph.outdegree(node) != 0) {
+			for (Integer adjacentNode : graph.data.get(node)) {
+				if (!graph.visited.get(adjacentNode)) {
+					graph.selectedEdges
+							.add(new SelectedEdge(node, adjacentNode));
+					recursiveSCC(graph, adjacentNode);
 				}
 			}
 		}
-		stack.pop();
-		postList.put(node, timer++);
-	}
-
-	/**
-	 * remove the edge between one vertex is outside of SCC and other vertex is
-	 * inside of SCC
-	 */
-	public void postEdgeProcess() {
-		if (selectedEdges.size() > 0) {
-			List<SelectedEdge> tempList = new ArrayList<>();
-			for (SelectedEdge currentEdge : selectedEdges) {
-				tempList.add(currentEdge);
-			}
-			scc.add(sccNumber++, tempList);
-
-			for (Integer stackNode : stack) {
-				List<Integer> list = data.get(stackNode);
-				for (SelectedEdge curEdge : selectedEdges) {
-					if (list.contains(curEdge.getFromNode())) {
-						removeEdge(stackNode, curEdge.getFromNode());
-					}
-				}
-			}
-
-			for (SelectedEdge curEdge : selectedEdges) {
-				List<Integer> list = data.get(curEdge.getFromNode());
-
-				for (Integer stackNode : stack) {
-					if (list.contains(stackNode)) {
-						removeEdge(curEdge.getFromNode(), stackNode);
-					}
-				}
-				List<Integer> list2 = data.get(curEdge.getToNode());
-				if (list2.contains(curEdge.getFromNode())) {
-					removeEdge(curEdge.getToNode(), curEdge.getFromNode());
-				}
-			}
-
-			selectedEdges.clear();
-		}
+		Integer x = graph.stack.pop();
+		sccList.add(x);
 	}
 
 	/**
@@ -431,10 +371,11 @@ public class Question1 extends Digraph implements ActionListener {
 	 * @return boolean
 	 */
 	public boolean isEulerian() {
+		visited = new HashMap<>();
+		selectedEdges = new ArrayList<>();
 		outdegreeMap = new HashMap<>();
 		indegreeMap = new HashMap<>();
 		edgeList = new ArrayList();
-		selectedEdges = new ArrayList<>();
 
 		List<Integer> greaterOutdegree = new ArrayList<>(); // for nodes that
 															// outdegree is
@@ -450,6 +391,7 @@ public class Question1 extends Digraph implements ActionListener {
 			Integer inNum = indegree(node);
 			outdegreeMap.put(node, outNum);
 			indegreeMap.put(node, inNum);
+			visited.put(node, false);
 			if (outNum == (inNum + 1)) {
 				greaterOutdegree.add(node);
 			} else if (inNum == (outNum + 1)) {
@@ -469,6 +411,7 @@ public class Question1 extends Digraph implements ActionListener {
 					edgeList.add(new Edge(node, adj));
 				}
 			}
+
 			trail = new LinkedBlockingQueue<Edge>();
 
 			Integer start;
@@ -479,11 +422,28 @@ public class Question1 extends Digraph implements ActionListener {
 				Integer index = random.nextInt(graphOrder());
 				start = equalList.get(index);
 			}
+
 			Edge edge = getUnvisitedEdge(start);
 			while (edge != null) {
+				if (!visited.get(edge.getFromNode())) {
+					visited.put(edge.getFromNode(), Boolean.TRUE);
+				}
+				if (!visited.get(edge.getToNode())) {
+					visited.put(edge.getToNode(), Boolean.TRUE);
+				}
 				edge.visited = true;
 				trail.offer(edge);
 				edge = getUnvisitedEdge(edge.getToNode());
+			}
+			if (trail.size() != graphSize()) {// the graph is not strongly
+												// connected
+				return false;
+			}
+			for (Integer node : nodeSet) {// check if there is any stand alone
+											// vertext
+				if (!visited.get(node)) {
+					return false;
+				}
 			}
 
 		} else {
@@ -578,6 +538,7 @@ public class Question1 extends Digraph implements ActionListener {
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		if (sccEnabled) {
+			sccEnabled = false;
 			int colorIndex = 0;
 			int currentIndex;
 			if (!isCycle) {// DAG
@@ -588,30 +549,33 @@ public class Question1 extends Digraph implements ActionListener {
 				}
 
 			} else {// SCC
-				for (int j = 0; j < standAloneSCC.size(); j++) {
+				for (int index = 0; index < scc.size(); index++) {
 					currentIndex = colorIndex % colorArray.length;
-					nodeList.get(standAloneSCC.get(j)).draw(g,
-							colorArray[currentIndex]);
-					colorIndex++;
-				}
-				for (int i = 0; i < sccNumber; i++) {
-					currentIndex = colorIndex % colorArray.length;
-					for (SelectedEdge selectedEdge : scc.get(i)) {
-						nodeList.get(selectedEdge.getFromNode()).draw(g,
-								colorArray[currentIndex]);
-						nodeList.get(selectedEdge.getToNode()).draw(g,
-								colorArray[currentIndex]);
-						drawEdge(selectedEdge.getFromNode(),
-								selectedEdge.getToNode(), g,
-								colorArray[currentIndex],
-								colorArray[currentIndex]);
+					List<Integer> list = scc.get(index);
+					for (int i = 0; i < list.size(); i++) {
+						if (list.size() == 1) {
+							nodeList.get(list.get(0)).draw(g,
+									colorArray[currentIndex]);
+						} else {
+							nodeList.get(list.get(i)).draw(g,
+									colorArray[currentIndex]);
+							if (i < list.size() - 1) {
+								drawEdge(list.get(i), list.get(i + 1), g,
+										colorArray[currentIndex],
+										colorArray[currentIndex]);
+							} else {
+								drawEdge(list.get(i), list.get(0), g,
+										colorArray[currentIndex],
+										colorArray[currentIndex]);
+							}
+						}
+						colorIndex++;
 					}
-					colorIndex++;
+
 				}
 				isCycle = false;
 			}
 
-			sccEnabled = false;
 		} else {
 			if (isCycle) {
 				isCycle = false;
@@ -620,11 +584,11 @@ public class Question1 extends Digraph implements ActionListener {
 				for (SelectedEdge selectedEdge : selectedEdges) {
 					drawEdge(selectedEdge.getFromNode(),
 							selectedEdge.getToNode(), g, Color.RED, Color.RED);
-					try {
-						Thread.sleep(300);
-					} catch (InterruptedException ex) {
-						ex.printStackTrace();
-					}
+					// try {
+					// Thread.sleep(1000);
+					// } catch (InterruptedException ex) {
+					// ex.printStackTrace();
+					// }
 				}
 				selectedEdges.clear();
 			}
@@ -640,10 +604,6 @@ public class Question1 extends Digraph implements ActionListener {
 			}
 
 		}
-	}
-
-	public void demo() {
-
 	}
 
 	@Override
@@ -666,7 +626,7 @@ public class Question1 extends Digraph implements ActionListener {
 						System.out.println("It's an invalid command");
 						break;
 					}
-					System.out.println("DFS parenthesis form is:");
+
 					performDFS(node1);
 					isPassEventToParent = false;
 				} catch (Exception e) {
@@ -680,7 +640,7 @@ public class Question1 extends Digraph implements ActionListener {
 						System.out.println("It's an invalid command");
 						break;
 					}
-					System.out.println("BFS parenthesis form is:");
+
 					performBFS(node1);
 					isPassEventToParent = false;
 				} catch (Exception e) {
@@ -723,6 +683,7 @@ public class Question1 extends Digraph implements ActionListener {
 							}
 						}
 					}
+					isPassEventToParent = false;
 				} catch (Exception e) {
 					System.out.println("Invalid command");
 				}
@@ -736,6 +697,7 @@ public class Question1 extends Digraph implements ActionListener {
 					}
 					cycleCheck(node1);
 					if (isCycle == false) {
+						System.out.println();
 						System.out.println("The linearization list is: ");
 						int x;
 						while (stack.size() > 0) {
@@ -744,9 +706,21 @@ public class Question1 extends Digraph implements ActionListener {
 						}
 						System.out.println();
 					} else {
+						System.out.println();
 						System.out
 								.println("The Graph has a cycle. It cannot be linearized!");
+						for (int i = 0; i < tempEdges.size(); i++) {
+							if (tempEdges.get(i).getFromNode() == firstCycleNode) {
+								for (int j = i; j < tempEdges.size(); j++) {
+									SelectedEdge selectedEdge = tempEdges
+											.get(j);
+									selectedEdges.add(selectedEdge);
+								}
+								break;
+							}
+						}
 					}
+					isPassEventToParent = false;
 				} catch (Exception e) {
 					System.out.println("Invalid command");
 
@@ -754,23 +728,43 @@ public class Question1 extends Digraph implements ActionListener {
 
 				break;
 			case "scc":
+				sccEnabled = true;
+				reverseGraph = new Question1();
+				for (Integer node : nodeSet) {
+					reverseGraph.add(node);
+				}
+				for (Integer i : nodeSet) {
+					List<Integer> list = data.get(i);
+					for (int w : list) {
+						reverseGraph.addEdge(i, w);
+					}
+				}
+
 				try {
 					node1 = Integer.parseInt(st.nextToken());
 					if (st.hasMoreTokens()) {
 						System.out.println("It's an invalid command");
 						break;
 					}
-					sccEnabled = true;
 					cycleCheck(node1);
 					if (isCycle == false) {
 						System.out.println("The graph is a DAG.There are "
 								+ graphOrder() + " SCC");
-						for (int srcNode : nodeSet) {
-							List<Integer> list = data.get(srcNode);
-							while (list.size() > 0) {
-								removeEdge(srcNode, list.get(list.size() - 1));
-							}
+						List<Integer> standaloneList = new ArrayList();
+						for (Integer i : nodeSet) {
+							standaloneList.add(i);
 						}
+						System.out.println("The scc is:");
+						for (Integer w = 0; w < standaloneList.size() - 1; w++) {
+							System.out.print("{");
+							System.out.print("" + w);
+							System.out.print("},");
+						}
+						System.out.print("{");
+						System.out.print(standaloneList.get(standaloneList
+								.size() - 1) + "}");
+						System.out.println();
+						isPassEventToParent = false;
 					} else {
 						performSCC(node1);
 					}
@@ -792,6 +786,7 @@ public class Question1 extends Digraph implements ActionListener {
 					System.out.println("Invalid command");
 
 				}
+				isPassEventToParent = false;
 				break;
 			case "eulerian":
 				try {
@@ -804,7 +799,6 @@ public class Question1 extends Digraph implements ActionListener {
 						System.out.println("Eurian Trail does not exist!");
 					} else {
 						Edge edge;
-						System.out.println();
 						while (trail.size() > 1) {
 							edge = trail.poll();
 							selectedEdges.add(new SelectedEdge(edge
@@ -819,6 +813,7 @@ public class Question1 extends Digraph implements ActionListener {
 								+ edge.getToNode());
 						System.out.println();
 					}
+					isPassEventToParent = false;
 				} catch (Exception e) {
 					System.out.println("Invalid command");
 
@@ -836,6 +831,7 @@ public class Question1 extends Digraph implements ActionListener {
 					} else {
 						System.out.println("Yes, the digraph is bipartite!");
 					}
+					isPassEventToParent = false;
 				} catch (Exception e) {
 					System.out.println("Invalid command");
 
@@ -848,7 +844,6 @@ public class Question1 extends Digraph implements ActionListener {
 		} else {
 			repaint();
 		}
-
 	}
 
 	private class Edge extends SelectedEdge {
@@ -915,12 +910,10 @@ public class Question1 extends Digraph implements ActionListener {
 		Question1 g = new Question1();
 
 		JFrame frame = new JFrame("Assignment 2 Question 1");
-		frame.setMinimumSize(new Dimension(450, 450));
-
+		frame.setSize(450, 450);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setLocation(0, 0);
 		frame.getContentPane().add(g);
 		frame.setVisible(true);
 	}
-
 }
