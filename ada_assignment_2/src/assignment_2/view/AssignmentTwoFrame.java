@@ -43,8 +43,8 @@ public class AssignmentTwoFrame extends JFrame {
 	 * Launch the application.
 	 */
 	public static void main(String[] args) {
-		Splash ss = new Splash();
-		ss.dispose();
+		// Splash ss = new Splash();
+		// ss.dispose();
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
@@ -84,6 +84,7 @@ public class AssignmentTwoFrame extends JFrame {
 				displayInfo();
 			}
 		});
+		mnNewMenu.add(mntnHelpMenuInstruction);
 		mnNewMenu.add(mntmHelpMenuItem);
 		contentPane = new JPanel();
 		contentPane.setBorder(new LineBorder(new Color(0, 0, 0)));
@@ -119,8 +120,8 @@ public class AssignmentTwoFrame extends JFrame {
 
 	private void displayInstructions() {
 
-		JOptionPane.showMessageDialog(this, "dfs 0\n"
+		JOptionPane.showMessageDialog(this, "digraph\ndfs 0\n"
 				+ "bfs 0\niscycle 0\nlinearize\nscc 0\n"
-				+ "distance 0 4\nisEulerian\nisBipartite");
+				+ "distance 0 4\nisEulerian\nisBipartite\n" + "wgrap\n");
 	}
 }

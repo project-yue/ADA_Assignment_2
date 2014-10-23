@@ -69,8 +69,6 @@ public class WGraph extends JPanel implements MouseMotionListener,
 	public boolean isMst;
 
 	//
-	public double[][] floydWarshall;
-	public double[][] bellmenFord;
 
 	// The Constructor
 	public WGraph() {
@@ -314,161 +312,6 @@ public class WGraph extends JPanel implements MouseMotionListener,
 
 	}
 
-	// /**
-	// * This method prints out the adjacency matrix of the graph You need to
-	// * complete this method
-	// *
-	// * The method computes the following data structure: 1. a HashMap labels
-	// * which associates each number between 0 and n-1 a unique node label 2. a
-	// * boolean nxn matrix adjMatrix storing the adjacency matrix where: the
-	// ith
-	// * row/column corresponds to the node with label labels.get(i)
-	// *
-	// * The method then prints out the adjacency matrix To the left and on top
-	// of
-	// * the matrix, the method also prints out the node label which corresponds
-	// * to each row and column
-	// */
-	// public void bellmanFord() {
-	// // n is the order of the graph
-	// int n = graphOrder();
-	//
-	// // the HashMap associates an index in [0..n-1] with a node label
-	// HashMap<Integer, Integer> labels = new HashMap<Integer, Integer>();
-	//
-	// // the adjacency matrix of the digraph, where the node indices in
-	// // the matrix are indicated by the labels HashMap
-	// String[][] adjMatrix = new String[n][n];
-	// HashMap<Integer, Double> list;
-	// int index = 0;
-	//
-	// for (Integer i : nodeSet) {
-	// labels.put((Integer) index, (Integer) i);
-	// index++;
-	// }
-	// for (int i = 0; i < n; i++) {
-	// list = data.get(labels.get((Integer) i));
-	// for (int j = 0; j < n; j++) {
-	// if (list.containsKey(labels.get((Integer) j))) {
-	// adjMatrix[i][j] = "" + list.get(labels.get((Integer) j));
-	// } else {
-	// adjMatrix[i][j] = "#";
-	// }
-	// }
-	// }
-	//
-	// for (int i = 0; i <= 8 * n; i++) {
-	// System.out.print("-");
-	// }
-	// System.out.print('\n');
-	//
-	// System.out.print("" + '\t');
-	// for (int i = 0; i < n; i++) {
-	// System.out.print("" + labels.get((Integer) i) + '\t');
-	// }
-	// System.out.print("" + '\n');
-	//
-	// for (int i = 0; i < n; i++) {
-	// System.out.print("" + labels.get((Integer) i));
-	// for (int j = 0; j < n; j++) {
-	// System.out.print('\t' + adjMatrix[i][j]);
-	// }
-	// System.out.print("" + '\n');
-	// }
-	// for (int i = 0; i <= 8 * n; i++) {
-	// System.out.print("-");
-	// }
-	// System.out.print('\n');
-	//
-	// }
-
-	public void printFloydWarshall() {
-		// n is the order of the graph
-		int n = graphOrder();
-
-		// the HashMap associates an index in [0..n-1] with a node label
-		HashMap<Integer, Integer> labels = new HashMap<Integer, Integer>();
-		this.floydWarshall = new double[n][n];
-
-		int index = 0;
-		HashMap<Integer, Double> list;
-
-		for (Integer i : nodeSet) {
-			labels.put((Integer) index, (Integer) i);
-			index++;
-		}
-		for (int i = 0; i < n; i++) {
-			list = data.get(labels.get((Integer) i));
-			for (int j = 0; j < n; j++) {
-				if (i == j) {
-					floydWarshall[i][j] = 0;
-				} else if (list.containsKey(labels.get((Integer) j))) {
-					floydWarshall[i][j] = list.get(labels.get((Integer) j));
-				} else {
-					floydWarshall[i][j] = 20;
-				}
-			}
-		}
-		this.floydWarshall = floydWarshall(this.floydWarshall);
-		for (int i = 0; i <= 8 * n; i++) {
-			System.out.print("-");
-		}
-		System.out.print('\n');
-
-		System.out.print("" + '\t');
-		for (int i = 0; i < n; i++) {
-			System.out.print("" + labels.get((Integer) i) + '\t');
-		}
-		System.out.print("" + '\n');
-
-		for (int i = 0; i < n; i++) {
-			System.out.print("" + labels.get((Integer) i));
-			for (int j = 0; j < n; j++) {
-				System.out.print("  " + this.floydWarshall[i][j]);
-			}
-			System.out.print("" + '\n');
-		}
-		for (int i = 0; i <= 8 * n; i++) {
-			System.out.print("-");
-		}
-		System.out.print('\n');
-	}
-
-	public double[][] floydWarshall(double[][] d) {
-		double[][] p = constructInitialMatixOfPredecessors(d);
-		for (int k = 0; k < d.length; k++) {
-			for (int i = 0; i < d.length; i++) {
-				for (int j = 0; j < d.length; j++) {
-					if (d[i][k] == Integer.MAX_VALUE
-							|| d[k][j] == Integer.MAX_VALUE) {
-						continue;
-					}
-
-					if (d[i][j] > d[i][k] + d[k][j]) {
-						d[i][j] = d[i][k] + d[k][j];
-						p[i][j] = p[k][j];
-					}
-
-				}
-			}
-		}
-		return p;
-	}
-
-	private double[][] constructInitialMatixOfPredecessors(double[][] d) {
-		double[][] p = new double[d.length][d.length];
-		for (int i = 0; i < d.length; i++) {
-			for (int j = 0; j < d.length; j++) {
-				if (d[i][j] != 0 && d[i][j] != Integer.MAX_VALUE) {
-					p[i][j] = i;
-				} else {
-					p[i][j] = 0;
-				}
-			}
-		}
-		return p;
-	}
-
 	/**
 	 * Clear the digraph
 	 *
@@ -595,6 +438,9 @@ public class WGraph extends JPanel implements MouseMotionListener,
 						break;
 					case "bellmanford":
 						GraphToolBox.performBellmanFord(this);
+						break;
+					case "floydwarshall":
+						GraphToolBox.performFloydWarshall(this);
 						break;
 					default:
 						System.out.println("Invalid command");

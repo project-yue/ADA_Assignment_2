@@ -4,8 +4,10 @@
  */
 package assignment_2;
 
-import assignment_2.structure.pq.HeapMinimumPriorityQueue;
-import assignment_2.WGraph;
+//import assignment_2.toolkit.HeapMinimumPriorityQueue;
+//import assignment2.toolkit.WGraph;
+import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -15,7 +17,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.StringTokenizer;
+
 import javax.swing.JFrame;
+import javax.swing.JTextArea;
+
+import assignment_2.structure.pq.HeapMinimumPriorityQueue;
 
 /**
  *
@@ -28,8 +34,19 @@ public class Question2 extends WGraph implements ActionListener {
 	private List<UndirectedWeightedEdge> undirectedWeightedEdges;
 	private List<List<List<Double>>> allPairsShortestPaths;
 
+	private JTextArea status;
+
 	public Question2() {
 		super();
+		status = new JTextArea();
+		status.setEditable(false);
+		status.setEnabled(false);
+		status.addMouseListener(this);
+		status.addMouseMotionListener(this);
+		status.setDisabledTextColor(Color.BLACK);
+		status.setLineWrap(true);
+		status.setOpaque(false);
+		add(status, BorderLayout.CENTER);
 	}
 
 	private void floydWarshall() {
@@ -65,8 +82,8 @@ public class Question2 extends WGraph implements ActionListener {
 	private void performFloydWarshall() {
 		int n = nodeSet.size();
 		allPairsShortestPaths = new ArrayList<>();
-		for (int k = 0; k < n; k++) {
-			allPairsShortestPaths.addAll(new ArrayList<List<List<Double>>>());
+		for (int k = 0; k <= n; k++) {
+			allPairsShortestPaths.add(new ArrayList<List<Double>>());
 			for (int i = 0; i < n; i++) {
 				allPairsShortestPaths.get(k).add(new ArrayList<Double>());
 				for (int j = 0; j < n; j++) {
@@ -149,6 +166,11 @@ public class Question2 extends WGraph implements ActionListener {
 		distances = new HashMap<>();
 		if (!bellmanFord(sourceNode)) {
 			for (Integer node : distances.keySet()) {
+				status.append("Node " + node + " shortest distance from "
+						+ "source node " + sourceNode + " is "
+						+ distances.get(node).getDistance()
+						+ " with least incident edge " + "from " + "node "
+						+ leastEdges.get(node) + "\n");
 				System.out.println("Node " + node + " shortest distance from "
 						+ "source node " + sourceNode + " is "
 						+ distances.get(node).getDistance()
@@ -156,6 +178,7 @@ public class Question2 extends WGraph implements ActionListener {
 						+ leastEdges.get(node));
 			}
 		} else {
+			status.append("The graph contains a negative cycle\n");
 			System.out.println("The graph contains a negative cycle");
 		}
 	}
@@ -214,19 +237,16 @@ public class Question2 extends WGraph implements ActionListener {
 		return isNegativeCycle;
 	}
 
-	private double[] printDistances(int i) {
-		int n = nodeSet.size();
-		double[] ans = new double[n];
+	private void printDistances(int i) {
 		String result = "i = " + i + ": ";
+		int n = nodeSet.size();
 		for (int node = 0; node < n; node++) {
 			result += distances.get(node).getDistance() + " ";
-			ans[node] = distances.get(node).getDistance();
 		}
 		System.out.println(result.trim());
-		return ans;
 	}
 
-	private void dijkstra(Integer sourceNode) {
+	private boolean dijkstra(Integer sourceNode) {
 		HeapMinimumPriorityQueue<NodeDistance> priortyQueue = new HeapMinimumPriorityQueue<>();
 		for (Integer node : nodeSet) {
 			NodeDistance nodeDistance = new NodeDistance();
@@ -246,6 +266,9 @@ public class Question2 extends WGraph implements ActionListener {
 		Integer currentSource = priortyQueue.getMinimumum().getNode();
 		while (priortyQueue.size() > 0) {
 			for (Integer adjNode : data.get(currentSource).keySet()) {
+				if (data.get(currentSource).get(adjNode) < 0.0) {
+					return false;
+				}
 				double distanceToAdjNode = distances.get(currentSource)
 						.getDistance() + data.get(currentSource).get(adjNode);
 				// relax all incident edges from a node
@@ -259,18 +282,29 @@ public class Question2 extends WGraph implements ActionListener {
 			}
 			currentSource = priortyQueue.getMinimumum().getNode();
 		}
+		return true;
 	}
 
 	private void performDijkstra(Integer sourceNode) {
 		leastEdges = new HashMap<>();
 		distances = new HashMap<>();
-		dijkstra(sourceNode);
-		for (Integer node : distances.keySet()) {
-			System.out.println("Node " + node + " shortest distance from "
-					+ "source node " + sourceNode + " is "
-					+ distances.get(node).getDistance()
-					+ " with least incident edge " + "from " + "node "
-					+ leastEdges.get(node));
+		if (dijkstra(sourceNode)) {
+			for (Integer node : distances.keySet()) {
+				status.append("Node " + node + " shortest distance from "
+						+ "source node " + sourceNode + " is "
+						+ distances.get(node).getDistance()
+						+ " with least incident edge " + "from " + "node "
+						+ leastEdges.get(node) + "\n");
+				System.out.println("Node " + node + " shortest distance from "
+						+ "source node " + sourceNode + " is "
+						+ distances.get(node).getDistance()
+						+ " with least incident edge " + "from " + "node "
+						+ leastEdges.get(node));
+			}
+		} else {
+			status.append("Graph contains negative weighted edge, Dijkstra cannot be performed");
+			System.out
+					.println("Graph contains negative weighted edge, Dijkstra cannot be performed");
 		}
 	}
 
@@ -306,6 +340,7 @@ public class Question2 extends WGraph implements ActionListener {
 				break;
 			case "clear":
 			case "load":
+				status.setText("");
 				leastEdges = null;
 				distances = null;
 				undirectedWeightedEdges = null;

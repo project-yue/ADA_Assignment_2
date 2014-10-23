@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Stack;
 
 import assignment_2.structure.pq.HeapMinimumPriorityQueue;
@@ -11,9 +12,9 @@ import assignment_2.structure.pq.WeightNode;
 import assignment_2.structure.set.GraphSet;
 
 /**
- * Inspired by Mahmoud as he created a draft for us to work on.
+ * a centralized utility class
  * 
- * @author Ximei & Yue
+ * @author Yue
  *
  */
 public class GraphToolBox {
@@ -22,12 +23,9 @@ public class GraphToolBox {
 	private static HashMap<Integer, NodeDistance> distances = new HashMap<>();
 	private static HeapMinimumPriorityQueue<NodeDistance> priorityQueue;
 	private static ArrayList<String> shortestPaths;
-	private static HashMap<Integer, NodeDistance> bellmanDistance = new HashMap<>();
 
 	public static void dijkstra(WGraph wgraph, Integer sourceNode,
 			Integer sinkNode) {
-		// leastEdges = new HashMap<>();
-		// distances = new HashMap<>();
 		priorityQueue = new HeapMinimumPriorityQueue<>();
 		for (Integer node : wgraph.nodeSet) {
 			NodeDistance nodeDistance = new NodeDistance();
@@ -298,6 +296,67 @@ public class GraphToolBox {
 		}
 		printDistances(n, wgraph);
 		return isNegativeCycle;
+	}
+
+	public static void performFloydWarshall(WGraph wgraph) {
+		int n = wgraph.nodeSet.size();
+		List<List<List<Double>>> allPairsShortestPaths = new ArrayList<>();
+		for (int k = 0; k <= n; k++) {
+			allPairsShortestPaths.add(new ArrayList<List<Double>>());
+			for (int i = 0; i < n; i++) {
+				allPairsShortestPaths.get(k).add(new ArrayList<Double>());
+				for (int j = 0; j < n; j++) {
+					if (i == j) {
+						allPairsShortestPaths.get(k).get(i).add(0.0);
+					} else {
+						allPairsShortestPaths.get(k).get(i)
+								.add(Double.POSITIVE_INFINITY);
+					}
+				}
+			}
+		}
+		floydWarshall(wgraph, allPairsShortestPaths);
+		for (int k = 0; k <= n; k++) {
+			System.out.println("k = " + k);
+			for (int i = 0; i < n; i++) {
+				for (int j = 0; j < n; j++) {
+					System.out.print(allPairsShortestPaths.get(k).get(i).get(j)
+							+ " ");
+				}
+				System.out.println();
+			}
+		}
+	}
+
+	private static void floydWarshall(WGraph wgraph,
+			List<List<List<Double>>> allPairsShortestPaths) {
+		for (Integer fromNode : wgraph.nodeSet) {
+			for (Integer toNode : wgraph.data.get(fromNode).keySet()) {
+				allPairsShortestPaths.get(0).get(fromNode)
+						.set(toNode, wgraph.data.get(fromNode).get(toNode));
+			}
+		}
+		int n = wgraph.nodeSet.size();
+		for (int k = 1; k <= n; k++) {
+			for (int i = 0; i < n; i++) {
+				for (int j = 0; j < n; j++) {
+					Double s = allPairsShortestPaths.get(k - 1).get(i)
+							.get(k - 1)
+							+ allPairsShortestPaths.get(k - 1).get(k - 1)
+									.get(j);
+					if (allPairsShortestPaths.get(k - 1).get(i).get(j) <= s) {
+						allPairsShortestPaths
+								.get(k)
+								.get(i)
+								.set(j,
+										allPairsShortestPaths.get(k - 1).get(i)
+												.get(j));
+					} else {
+						allPairsShortestPaths.get(k).get(i).set(j, s);
+					}
+				}
+			}
+		}
 	}
 
 	private static double[] printDistances(int i, WGraph wgraph) {
