@@ -1,0 +1,60 @@
+Question 1
+Usage:
+1. dfs
+command: "dfs nodeNumber", such as "dfs 0"
+
+effect: DFS parenthesis form and highlight the DFS exploration in the graph
+
+2. bfs
+command: "bfs nodeNumber",such as "bfs 0"
+
+effect: BFS parenthesis form and highlight the BFS exploration in the graph
+
+3.isCycle
+command: "cycle nodeNumber",such as "cycle 0"
+
+effect:
+if there is a cycle, highlight the cycle in the graph
+otherwise, print "The graph is a DAG"
+
+4.linearize
+command: "linearize nodeNumber",such as "linearize 0"
+
+effect:
+if there is a cycle, print "The Graph has a cycle. It cannot be linearized!"
+otherwise, print the linearization list.
+
+5.scc
+command: "scc nodeNumber",such as "scc 0"
+
+effect:
+print all the SCCs, and also highlight in the graph, the the vertexes and edges belonging to 
+the same SCC use the same colour to highlight.
+
+6.distance
+command: "scc node1 node2",such as "distance 0 4"
+
+
+effect:
+if there is a path from node1 to node2, print the distance from node1 to node2, also highlight the shortest path from node1 to node2
+otherwise, print "The distance from node 0 to node 4 is infinity."
+
+7.isEulerian
+command: "eulerian", such as "eulerian"
+effect:
+If the graph is eulerian, print the eulerian trail,and also highlight all the edges in the eulerian trail
+otherwise,print "Eurian Trail does not exist!"
+
+8.isBipartite
+command: "bipartite", such as "bipartite"
+effect:
+the element in the two sets will be distinguished with red and blue colour. If there's an
+edge connecting the same colour,print "The digraph is not bipartite!,otherwise, print
+"Yes, the digraph is bipartite!".
+
+Question 2
+dijkstra A B
+plot the shortest path from A to B
+
+mst
+plot the minimal spanning tree by using kraskal's algorithm
