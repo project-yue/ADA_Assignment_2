@@ -91,7 +91,12 @@ public class AssignmentTwoFrame extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				String result = JOptionPane
 						.showInputDialog("Input drawing frequency in millisecondse e.g. 1000");
-				AssignmentTwoFrame.TIME_ADJUSTMENT = Integer.parseInt(result);
+				try {
+					AssignmentTwoFrame.TIME_ADJUSTMENT = Integer
+							.parseInt(result);
+				} catch (NumberFormatException exception) {
+					System.out.println(exception.getMessage());
+				}
 			}
 		});
 		mnSettingMenu.add(config);
@@ -134,6 +139,8 @@ public class AssignmentTwoFrame extends JFrame {
 
 		JOptionPane.showMessageDialog(this, "digraph\ndfs 0\n"
 				+ "bfs 0\niscycle 0\nlinearize\nscc 0\n"
-				+ "distance 0 4\nisEulerian\nisBipartite\n" + "wgrap\n");
+				+ "distance 0 4\nisEulerian\nisBipartite\n"
+				+ "wgrap\ndijkstra 0 1\nmst\nprint floydwarshall"
+				+ "\nprint bellmanford");
 	}
 }

@@ -22,6 +22,7 @@ import java.util.StringTokenizer;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
 import assignment_2.structure.pq.HeapMinimumPriorityQueue;
@@ -66,6 +67,7 @@ public class WGraph extends JPanel implements MouseMotionListener,
 	public HeapMinimumPriorityQueue<WeightNode> weightPQ;
 	// public Collection<Integer> mstEdges;
 	public boolean isMst;
+	public JTextArea status;
 
 	//
 
@@ -94,7 +96,16 @@ public class WGraph extends JPanel implements MouseMotionListener,
 		add(tf, BorderLayout.SOUTH);
 		moveNode = -1; // Initial values of moveNode is -1
 		selectedNode = -1; // Initial values of moveNode is -1
-
+		// jtextarea
+		status = new JTextArea();
+		status.setEditable(false);
+		status.setEnabled(false);
+		status.addMouseListener(this);
+		status.addMouseMotionListener(this);
+		status.setDisabledTextColor(Color.BLACK);
+		status.setLineWrap(true);
+		status.setOpaque(false);
+		add(status, BorderLayout.CENTER);
 	}
 
 	/**

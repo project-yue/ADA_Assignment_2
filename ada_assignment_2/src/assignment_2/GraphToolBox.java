@@ -8,14 +8,13 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.Stack;
+import java.util.StringTokenizer;
 
 import assignment_2.structure.pq.HeapMinimumPriorityQueue;
 import assignment_2.view.AssignmentTwoFrame;
 
-//import assignment_2.structure.set.GraphSet;
-
 /**
- * a centralized utility class
+ * a centralized utility class for q2
  * 
  * @author Yue
  *
@@ -137,27 +136,35 @@ public class GraphToolBox {
 		for (int i = 0; i <= 8 * n; i++) {
 			System.out.print("-");
 		}
+		wgraph.status.setText("Bellmanford result:\n");
 		System.out.println();
 		for (Integer node : wgraph.nodeSet) {
 			System.out.print("\t" + node);
+			wgraph.status.append("\t" + node);
 		}
 		System.out.println();
+		wgraph.status.append("\n");
 		for (Integer sourceNode : wgraph.nodeSet) {
 			if (!bellmanFord(sourceNode, wgraph)) {
-				//
 				System.out.print(sourceNode + "\t");
+				wgraph.status.append(sourceNode + "\t");
 				for (Integer node : distances.keySet()) {
 					System.out.print(distances.get(node).getDistance() + "\t");
+					wgraph.status.append(distances.get(node).getDistance()
+							+ "\t");
 				}
-				//
 			} else {
 				System.out.println("The graph contains a negative cycle");
+				wgraph.status.append("The graph contains a negative cycle"
+						+ "\n");
 			}
 			System.out.println();
+			wgraph.status.append("\n");
 		}
 		for (int i = 0; i <= 8 * n; i++) {
 			System.out.print("-");
 		}
+		wgraph.status.append("\n");
 	}
 
 	private static boolean bellmanFord(Integer sourceNode, WGraph wgraph) {
@@ -328,27 +335,35 @@ public class GraphToolBox {
 			System.out.print("-");
 		}
 		System.out.println();
-
+		wgraph.status.setText("Floydwarshall result:\n");
 		for (Integer node : wgraph.nodeSet) {
 			System.out.print("\t" + node);
+			wgraph.status.append("\t" + node);
 		}
+		wgraph.status.append("\n");
 		System.out.println();
-		for (int k = 0; k < n; k++) {
-			System.out.print(k);
+		String result = "";
+		for (int k = 0; k <= n; k++) {
+			System.out.println("k = " + k);
 			for (int i = 0; i < n; i++) {
 				for (int j = 0; j < n; j++) {
-					if (k == i) {
-						if (allPairsShortestPaths.get(k).get(i).get(j) == Double.POSITIVE_INFINITY) {
-							System.out.print("\t i ");
-						} else {
-							System.out.print("\t"
-									+ allPairsShortestPaths.get(k).get(i)
-											.get(j));
-						}
+					if (k == n) {
+						System.out.print(allPairsShortestPaths.get(k).get(i)
+								.get(j)
+								+ " ");
+						result += allPairsShortestPaths.get(k).get(i).get(j)
+								+ "\t";
 					}
 				}
+				result += "\n";
+				System.out.println();
 			}
-			System.out.println();
+		}
+		StringTokenizer st = new StringTokenizer(result, "\n");
+		int node = 0;
+		int size = st.countTokens();
+		while (node++ < size) {
+			wgraph.status.append(node + "\t" + st.nextToken() + "\n");
 		}
 
 		for (int i = 0; i <= 8 * n; i++) {
