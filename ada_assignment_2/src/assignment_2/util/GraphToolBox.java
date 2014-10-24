@@ -27,6 +27,7 @@ public class GraphToolBox {
 	private static HashMap<Integer, NodeDistance> distances = new HashMap<>();
 	private static HeapMinimumPriorityQueue<NodeDistance> priorityQueue;
 	private static ArrayList<String> shortestPaths;
+	private static ArrayList<Double[]> bellmanProcessesList;
 
 	public static void dijkstra(WGraph wgraph, Integer sourceNode,
 			Integer sinkNode) {
@@ -138,6 +139,7 @@ public class GraphToolBox {
 	public static void performBellmanFord(WGraph wgraph) {
 		leastEdges = new HashMap<>();
 		distances = new HashMap<>();
+		bellmanProcessesList = new ArrayList<>();
 		int n = wgraph.graphOrder();
 		for (int i = 0; i <= 8 * n; i++) {
 			System.out.print("-");
@@ -171,6 +173,7 @@ public class GraphToolBox {
 			System.out.print("-");
 		}
 		wgraph.status.append("\n");
+		printBellmanfordProcesses(wgraph, bellmanProcessesList);
 	}
 
 	private static boolean bellmanFord(Integer sourceNode, WGraph wgraph) {
@@ -188,7 +191,8 @@ public class GraphToolBox {
 		distances.put(sourceNode, nodeDistance);
 		leastEdges.put(sourceNode, sourceNode);
 		int n = wgraph.nodeSet.size();
-		printDistances(0, wgraph);
+		// ArrayList<Double[]> bellmanProcessesList = new ArrayList<>();
+		bellmanProcessesList.add(printDistances(0, wgraph));
 		for (int i = 1; i < n; i++) {
 			for (Integer fromNode : wgraph.nodeSet) {
 				for (Integer toNode : wgraph.data.get(fromNode).keySet()) {
@@ -205,7 +209,7 @@ public class GraphToolBox {
 					}
 				}
 			}
-			printDistances(i, wgraph);
+			bellmanProcessesList.add(printDistances(i, wgraph));
 		}
 
 		for (Integer fromNode : wgraph.nodeSet) {
@@ -223,8 +227,29 @@ public class GraphToolBox {
 				}
 			}
 		}
-		printDistances(n, wgraph);
+		bellmanProcessesList.add(printDistances(n, wgraph));
+		// printBellmanfordProcesses(wgraph, bellmanProcessesList);
 		return isNegativeCycle;
+	}
+
+	private static void printBellmanfordProcesses(WGraph wgraph,
+			ArrayList<Double[]> processList) {
+		System.out.println();
+		for (int i = 0; i < processList.size(); i++) {
+			System.out.println("iteration " + i + ":");
+			for (Integer node : wgraph.nodeSet) {
+				System.out.print("\t" + node);
+			}
+			System.out.println();
+			Double[] temp = processList.get(i);
+			for (int l = 0; l < temp.length; l++) {
+				if (temp[l] != Double.POSITIVE_INFINITY)
+					System.out.print("\t" + temp[l]);
+				else
+					System.out.print("\t" + "i");
+			}
+			System.out.println();
+		}
 	}
 
 	public static void mst(WGraph wgraph) {
@@ -409,9 +434,9 @@ public class GraphToolBox {
 		}
 	}
 
-	private static double[] printDistances(int i, WGraph wgraph) {
+	private static Double[] printDistances(int i, WGraph wgraph) {
 		int n = wgraph.nodeSet.size();
-		double[] ans = new double[n];
+		Double[] ans = new Double[n];
 		String result = "i = " + i + ": ";
 		for (int node = 0; node < n; node++) {
 			result += distances.get(node).getDistance() + " ";
