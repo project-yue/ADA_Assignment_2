@@ -359,7 +359,8 @@ public class WGraph extends JPanel implements MouseMotionListener,
 					GraphToolBox.dijkstra(this, node1, node2);
 				} catch (Exception e) {
 					System.out.println("There is no pass between "
-							+ "the source node and the sink node");
+							+ "the source node and the sink node"
+							+ " due to negative edge(s) present");
 				}
 				break;
 

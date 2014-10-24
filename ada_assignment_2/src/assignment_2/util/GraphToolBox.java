@@ -33,6 +33,10 @@ public class GraphToolBox {
 		priorityQueue = new HeapMinimumPriorityQueue<>();
 		for (Integer node : wgraph.nodeSet) {
 			NodeDistance nodeDistance = new NodeDistance();
+			if (nodeDistance.distance < 0.0) {
+				return;
+			}
+
 			if (node != sourceNode) {
 				leastEdges.put(node, null);
 				nodeDistance.node = node;
