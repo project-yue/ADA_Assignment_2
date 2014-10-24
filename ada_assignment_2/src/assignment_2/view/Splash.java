@@ -14,7 +14,7 @@ public class Splash extends JWindow {
 
 	public Splash() {
 		image = new ImageIcon(
-				(getClass().getResource("/assignment_2/view/yolo.png")))
+				(getClass().getResource("/assignment_2/view/splash.png")))
 				.getImage();
 		icon = new ImageIcon(image);
 		enableEvents(AWTEvent.WINDOW_EVENT_MASK);
