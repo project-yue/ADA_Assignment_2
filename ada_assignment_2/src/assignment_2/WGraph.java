@@ -16,7 +16,6 @@ import java.awt.geom.QuadCurve2D;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Set;
 import java.util.StringTokenizer;
@@ -138,7 +137,7 @@ public class WGraph extends JPanel implements MouseMotionListener,
 		HashMap<Integer, Double> list = data.get((Integer) node1);
 		if (!list.containsKey((Integer) node2)) {
 			list.put((Integer) node2, (Double) weight);
-			System.out.println(node1 + " " + node2 + " " + weight);
+			// System.out.println(node1 + " " + node2 + " " + weight);
 			WeightNode wn = new WeightNode(node1, node2, weight);
 			this.weightPQ.insert(wn);
 		}
@@ -152,9 +151,13 @@ public class WGraph extends JPanel implements MouseMotionListener,
 	 *
 	 */
 	public void load(String fileName) {
+		this.nodeSet.clear();
 		try {
 			BufferedReader br = new BufferedReader(new FileReader(fileName));
 			int numNodes = Integer.parseInt(br.readLine());
+			for (Integer node : this.data.keySet()) {
+				this.nodeSet.add(node);
+			}
 			int pos = 0;
 			String output;
 			for (int i = 0; i < numNodes; i++) {
@@ -349,9 +352,11 @@ public class WGraph extends JPanel implements MouseMotionListener,
 				break;
 
 			case "mst":
-				GraphToolBox.mst(this, super.getGraphics());
+				GraphToolBox.mst(this);
 				break;
-
+			case "kruskal":
+				GraphToolBox.mst(this);
+				break;
 			case "load":
 				try {
 					clear();

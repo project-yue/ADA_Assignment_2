@@ -23,7 +23,7 @@ import javax.swing.JFrame;
 
 /**
  *
- * @author mmahmoud
+ * @author Ximei
  */
 public class Question1 extends Digraph implements ActionListener {
 

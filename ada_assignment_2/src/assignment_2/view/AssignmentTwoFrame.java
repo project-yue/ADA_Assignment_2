@@ -4,7 +4,6 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.EventQueue;
-import java.awt.MenuItem;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -32,12 +31,12 @@ import assignment_2.WGraph;
 public class AssignmentTwoFrame extends JFrame {
 
 	private JPanel contentPane;
-	private JMenuBar menuBar;
-	private JMenu mnNewMenu;
-	private JMenuItem mntmHelpMenuItem;
 	private JTabbedPane frameTabbedPane;
 	private JPanel digraphPanel;
 	private JPanel wgraph_panel;
+
+	// drawing process in miliseconds
+	public static int TIME_ADJUSTMENT = 1000;
 
 	/**
 	 * Launch the application.
@@ -65,9 +64,9 @@ public class AssignmentTwoFrame extends JFrame {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 500);
 		setMinimumSize(new Dimension(300, 250));
-		menuBar = new JMenuBar();
+		JMenuBar menuBar = new JMenuBar();
 		setJMenuBar(menuBar);
-		mnNewMenu = new JMenu("Help");
+		JMenu mnNewMenu = new JMenu("Help");
 		mnNewMenu.setHorizontalAlignment(SwingConstants.CENTER);
 		menuBar.add(mnNewMenu);
 		JMenuItem mntnHelpMenuInstruction = new JMenuItem("Instructions");
@@ -77,15 +76,28 @@ public class AssignmentTwoFrame extends JFrame {
 				displayInstructions();
 			}
 		});
-		mntmHelpMenuItem = new JMenuItem("Version");
+		JMenuItem mntmHelpMenuItem = new JMenuItem("Version");
 		mntmHelpMenuItem.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				displayInfo();
 			}
 		});
+		JMenu mnSettingMenu = new JMenu("Setting");
+		menuBar.add(mnSettingMenu);
+		JMenuItem config = new JMenuItem("Drawing time");
+		config.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				String result = JOptionPane
+						.showInputDialog("Input drawing frequency in millisecondse e.g. 1000");
+				AssignmentTwoFrame.TIME_ADJUSTMENT = Integer.parseInt(result);
+			}
+		});
+		mnSettingMenu.add(config);
 		mnNewMenu.add(mntnHelpMenuInstruction);
 		mnNewMenu.add(mntmHelpMenuItem);
+
 		contentPane = new JPanel();
 		contentPane.setBorder(new LineBorder(new Color(0, 0, 0)));
 		contentPane.setLayout(new BorderLayout());
