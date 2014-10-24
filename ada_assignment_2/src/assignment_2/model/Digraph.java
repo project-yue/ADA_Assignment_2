@@ -1,4 +1,4 @@
-package assignment_2;
+package assignment_2.model;
 
 import java.awt.BasicStroke;
 import java.awt.BorderLayout;

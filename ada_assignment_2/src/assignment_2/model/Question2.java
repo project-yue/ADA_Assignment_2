@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package assignment_2;
+package assignment_2.model;
 
 //import assignment_2.toolkit.HeapMinimumPriorityQueue;
 //import assignment2.toolkit.WGraph;

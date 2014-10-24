@@ -1,5 +1,6 @@
 package assignment_2.view;
 
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -18,8 +19,8 @@ import javax.swing.JTabbedPane;
 import javax.swing.SwingConstants;
 import javax.swing.border.LineBorder;
 
-import assignment_2.Question1;
-import assignment_2.WGraph;
+import assignment_2.model.Question1;
+import assignment_2.model.WGraph;
 
 /**
  * Singleton pattern on the two questions.
@@ -137,10 +138,10 @@ public class AssignmentTwoFrame extends JFrame {
 
 	private void displayInstructions() {
 
-		JOptionPane.showMessageDialog(this, "digraph\ndfs 0\n"
+		JOptionPane.showMessageDialog(this, "Digraph:\ndfs 0\n"
 				+ "bfs 0\niscycle 0\nlinearize\nscc 0\n"
 				+ "distance 0 4\nisEulerian\nisBipartite\n"
-				+ "wgrap\ndijkstra 0 1\nmst\nprint floydwarshall"
+				+ "Wgraph:\ndijkstra 0 1\nmst\nprint floydwarshall"
 				+ "\nprint bellmanford");
 	}
 }

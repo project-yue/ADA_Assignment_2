@@ -1,4 +1,4 @@
-package assignment_2;
+package assignment_2.model;
 
 import java.awt.BasicStroke;
 import java.awt.BorderLayout;
@@ -27,6 +27,7 @@ import javax.swing.JTextField;
 
 import assignment_2.structure.pq.HeapMinimumPriorityQueue;
 import assignment_2.structure.pq.WeightNode;
+import assignment_2.util.GraphToolBox;
 
 /**
  * This class implements the weighted directed graph ADT and a simple GUI for

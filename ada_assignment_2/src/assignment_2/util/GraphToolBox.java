@@ -1,4 +1,4 @@
-package assignment_2;
+package assignment_2.util;
 
 import java.awt.Color;
 import java.util.ArrayList;
@@ -10,7 +10,9 @@ import java.util.Set;
 import java.util.Stack;
 import java.util.StringTokenizer;
 
+import assignment_2.model.WGraph;
 import assignment_2.structure.pq.HeapMinimumPriorityQueue;
+import assignment_2.structure.pq.UndirectedWeightedEdge;
 import assignment_2.view.AssignmentTwoFrame;
 
 /**

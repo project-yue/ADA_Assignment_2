@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package assignment_2;
+package assignment_2.model;
 
 import java.awt.Color;
 import java.awt.Graphics;
