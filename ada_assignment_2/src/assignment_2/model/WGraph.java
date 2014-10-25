@@ -68,7 +68,8 @@ public class WGraph extends JPanel implements MouseMotionListener,
 	public HeapMinimumPriorityQueue<WeightNode> weightPQ;
 	// public Collection<Integer> mstEdges;
 	public boolean isMst;
-//	public JTextArea status;
+
+	// public JTextArea status;
 
 	//
 
@@ -455,7 +456,11 @@ public class WGraph extends JPanel implements MouseMotionListener,
 						printMatrix();
 						break;
 					case "bellmanford":
-						GraphToolBox.performBellmanFord(this);
+						Integer fromNode = Integer.parseInt(st.nextToken());
+						Integer toNode = Integer.parseInt(st.nextToken());
+						// GraphToolBox.performBellmanFord(this,);
+						GraphToolBox.performBellmanFord(fromNode, toNode, this);
+						;
 						break;
 					case "floydwarshall":
 						GraphToolBox.performFloydWarshall(this);
