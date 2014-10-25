@@ -10,6 +10,8 @@ import java.util.Set;
 import java.util.Stack;
 import java.util.StringTokenizer;
 
+import javax.swing.JPanel;
+
 import assignment_2.model.WGraph;
 import assignment_2.structure.pq.HeapMinimumPriorityQueue;
 import assignment_2.structure.pq.UndirectedWeightedEdge;
@@ -235,8 +237,9 @@ public class GraphToolBox {
 	private static void printBellmanfordProcesses(WGraph wgraph,
 			ArrayList<Double[]> processList) {
 		System.out.println();
+		int currentNode = 0;
 		for (int i = 0; i < processList.size(); i++) {
-			System.out.println("iteration " + i + ":");
+			System.out.println("Nodes used :" + i % wgraph.nodeSet.size());
 			for (Integer node : wgraph.nodeSet) {
 				System.out.print("\t" + node);
 			}
@@ -391,16 +394,27 @@ public class GraphToolBox {
 			}
 		}
 		StringTokenizer st = new StringTokenizer(result, "\n");
+		// System.out.println(wgraph.getParent().getParent().getParent().getParent().getParent().getParent());
+		AssignmentTwoFrame atf = (AssignmentTwoFrame) wgraph.getParent()
+				.getParent().getParent().getParent().getParent().getParent();
 		int node = 0;
 		int size = st.countTokens();
-		while (node++ < size) {
-			wgraph.status.append(node + "\t" + st.nextToken() + "\n");
+		while (node < size) {
+			String outRes = node + "\t" + st.nextToken() + "\n";
+			// for (String sj : outRes.split("\t")) {
+			// System.out.println(sj);
+			// }
+			atf.md.addFloydWarshallRow(outRes);
+			wgraph.status.append(outRes);
+			// wgraph.status.append(node + "\t" + st.nextToken() + "\n");
+			node++;
 		}
 
 		for (int i = 0; i <= 8 * n; i++) {
 			System.out.print("-");
 		}
 		System.out.println();
+		atf.md.floydWarshallTable(wgraph);
 	}
 
 	private static void floydWarshall(WGraph wgraph,

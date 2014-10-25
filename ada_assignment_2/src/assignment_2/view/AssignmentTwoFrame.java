@@ -1,6 +1,5 @@
 package assignment_2.view;
 
-
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -35,6 +34,8 @@ public class AssignmentTwoFrame extends JFrame {
 	private JTabbedPane frameTabbedPane;
 	private JPanel digraphPanel;
 	private JPanel wgraph_panel;
+
+	public MyDialog md = new MyDialog(this);
 
 	// drawing process in miliseconds
 	public static int TIME_ADJUSTMENT = 1000;
@@ -110,6 +111,19 @@ public class AssignmentTwoFrame extends JFrame {
 		setContentPane(contentPane);
 		initDigraphTab();
 		initWgraphTab();
+
+		// insert dialog
+		JMenu testingMenu = new JMenu("Test Dialog");
+		menuBar.add(testingMenu);
+		JMenuItem test = new JMenuItem("Test");
+		testingMenu.add(test);
+		test.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				md.display();
+			}
+		});
 	}
 
 	private void initDigraphTab() {
