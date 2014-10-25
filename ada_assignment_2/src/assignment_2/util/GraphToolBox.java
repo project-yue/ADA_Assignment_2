@@ -31,11 +31,14 @@ public class GraphToolBox {
 	private static HashMap<Integer, ArrayList<Double>> printList;
 	private static HashMap<Integer, ArrayList<Integer>> inList;// store the
 																// indegree
-
-	// private static ArrayList<Double[]> bellmanProcessesList;
+	public static boolean containNegativeEdge = false;
 
 	public static void dijkstra(WGraph wgraph, Integer sourceNode,
 			Integer sinkNode) {
+		if (containNegativeEdge) {
+			System.out.println("Graph contains negative"
+					+ " edge; therefore, dijkstra cannot" + " be applied");
+		}
 		priorityQueue = new HeapMinimumPriorityQueue<>();
 		for (Integer node : wgraph.nodeSet) {
 			NodeDistance nodeDistance = new NodeDistance();
@@ -142,123 +145,6 @@ public class GraphToolBox {
 		return leastEdges.get(node);
 	}
 
-	// public static void performBellmanFord(WGraph wgraph) {
-	// leastEdges = new HashMap<>();
-	// distances = new HashMap<>();
-	// bellmanProcessesList = new ArrayList<>();
-	// int n = wgraph.graphOrder();
-	// for (int i = 0; i <= 8 * n; i++) {
-	// System.out.print("-");
-	// }
-	// // wgraph.status.setText("Bellmanford result:\n");
-	// System.out.println();
-	// for (Integer node : wgraph.nodeSet) {
-	// System.out.print("\t" + node);
-	// // wgraph.status.append("\t" + node);
-	// }
-	// System.out.println();
-	// // wgraph.status.append("\n");
-	// for (Integer sourceNode : wgraph.nodeSet) {
-	// if (!bellmanFord(sourceNode, wgraph)) {
-	// System.out.print(sourceNode + "\t");
-	// // wgraph.status.append(sourceNode + "\t");
-	// for (Integer node : distances.keySet()) {
-	// System.out.print(distances.get(node).getDistance() + "\t");
-	// // wgraph.status.append(distances.get(node).getDistance()
-	// // + "\t");
-	// }
-	// } else {
-	// System.out.println("The graph contains a negative cycle");
-	// // wgraph.status.append("The graph contains a negative cycle"
-	// // + "\n");
-	// }
-	// System.out.println();
-	// // wgraph.status.append("\n");
-	// }
-	// for (int i = 0; i <= 8 * n; i++) {
-	// System.out.print("-");
-	// }
-	// // wgraph.status.append("\n");
-	// printBellmanfordProcesses(wgraph, bellmanProcessesList);
-	// }
-	//
-	// private static boolean bellmanFord(Integer sourceNode, WGraph wgraph) {
-	// boolean isNegativeCycle = false;
-	// for (Integer node : wgraph.nodeSet) {
-	// NodeDistance nodeDistance = new NodeDistance();
-	// nodeDistance.setNode(node);
-	// nodeDistance.setDistance((Double) Double.POSITIVE_INFINITY);
-	// distances.put(node, nodeDistance);
-	// leastEdges.put(node, null);
-	// }
-	// NodeDistance nodeDistance = new NodeDistance();
-	// nodeDistance.setNode(sourceNode);
-	// nodeDistance.setDistance(0.0);
-	// distances.put(sourceNode, nodeDistance);
-	// leastEdges.put(sourceNode, sourceNode);
-	// int n = wgraph.nodeSet.size();
-	// // ArrayList<Double[]> bellmanProcessesList = new ArrayList<>();
-	// bellmanProcessesList.add(printDistances(0, wgraph));
-	// for (int i = 1; i < n; i++) {
-	// for (Integer fromNode : wgraph.nodeSet) {
-	// for (Integer toNode : wgraph.data.get(fromNode).keySet()) {
-	// Double fromNodeDistance = distances.get(fromNode)
-	// .getDistance();
-	// Double toNodeDistance = distances.get(toNode).getDistance();
-	// Double edgeWeight = wgraph.data.get(fromNode).get(toNode);
-	// if (fromNodeDistance + edgeWeight < toNodeDistance) {
-	// nodeDistance = new NodeDistance();
-	// nodeDistance.setNode(toNode);
-	// nodeDistance.setDistance(fromNodeDistance + edgeWeight);
-	// distances.put(toNode, nodeDistance);
-	// leastEdges.put(toNode, fromNode);
-	// }
-	// }
-	// }
-	// bellmanProcessesList.add(printDistances(i, wgraph));
-	// }
-	//
-	// for (Integer fromNode : wgraph.nodeSet) {
-	// for (Integer toNode : wgraph.data.get(fromNode).keySet()) {
-	// Double fromNodeDistance = distances.get(fromNode).getDistance();
-	// Double toNodeDistance = distances.get(toNode).getDistance();
-	// Double edgeWeight = wgraph.data.get(fromNode).get(toNode);
-	// if (fromNodeDistance + edgeWeight < toNodeDistance) {
-	// nodeDistance = new NodeDistance();
-	// nodeDistance.setNode(toNode);
-	// nodeDistance.setDistance(fromNodeDistance + edgeWeight);
-	// distances.put(toNode, nodeDistance);
-	// leastEdges.put(toNode, fromNode);
-	// isNegativeCycle = true;
-	// }
-	// }
-	// }
-	// bellmanProcessesList.add(printDistances(n, wgraph));
-	// // printBellmanfordProcesses(wgraph, bellmanProcessesList);
-	// return isNegativeCycle;
-	// }
-
-	// private static void printBellmanfordProcesses(WGraph wgraph,
-	// ArrayList<Double[]> processList) {
-	// System.out.println();
-	// int currentNode = 0;
-	// for (int i = 0; i < processList.size(); i++) {
-	// System.out.println("Nodes used :" + i % wgraph.nodeSet.size());
-	// for (Integer node : wgraph.nodeSet) {
-	// System.out.print("\t" + node);
-	// }
-	// System.out.println();
-	// Double[] temp = processList.get(i);
-	// for (int l = 0; l < temp.length; l++) {
-	// if (temp[l] != Double.POSITIVE_INFINITY)
-	// System.out.print("\t" + temp[l]);
-	// else
-	// System.out.print("\t" + "i");
-	// }
-	// System.out.println();
-	// }
-	// }
-
 	public static void performBellmanFord(Integer sourceNode, Integer destNode,
 			WGraph wgraph) {
 		leastEdges = new HashMap<>();
@@ -266,14 +152,6 @@ public class GraphToolBox {
 		printList = new HashMap<>();
 		inList = new HashMap<>();
 		indegreeList(wgraph);
-		// if (!bellmanFord(sourceNode)) {
-		// System.out.println("The shortest distance from " + "source node "
-		// + sourceNode + " to " + destNode
-		// + +distances.get(sourceNode).getDistance());
-		// } else {
-		// status.append("The graph contains a negative cycle\n");
-		// System.out.println("The graph contains a negative cycle");
-		// }
 		if (!bellmanFord(sourceNode, wgraph)) {
 			System.out.println("The shortest distance from node"
 					+ "source node " + sourceNode + " to node " + destNode

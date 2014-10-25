@@ -66,10 +66,8 @@ public class WGraph extends JPanel implements MouseMotionListener,
 
 	// Added weight PQ and set for mst
 	public HeapMinimumPriorityQueue<WeightNode> weightPQ;
-	// public Collection<Integer> mstEdges;
-	public boolean isMst;
 
-	// public JTextArea status;
+	// public boolean isMst;
 
 	//
 
@@ -98,16 +96,6 @@ public class WGraph extends JPanel implements MouseMotionListener,
 		add(tf, BorderLayout.SOUTH);
 		moveNode = -1; // Initial values of moveNode is -1
 		selectedNode = -1; // Initial values of moveNode is -1
-		// jtextarea
-		// status = new JTextArea();
-		// status.setEditable(false);
-		// status.setEnabled(false);
-		// status.addMouseListener(this);
-		// status.addMouseMotionListener(this);
-		// status.setDisabledTextColor(Color.BLACK);
-		// status.setLineWrap(true);
-		// status.setOpaque(false);
-		// add(status, BorderLayout.CENTER);
 	}
 
 	/**
@@ -165,6 +153,7 @@ public class WGraph extends JPanel implements MouseMotionListener,
 	 */
 	public void load(String fileName) {
 		this.nodeSet.clear();
+		GraphToolBox.containNegativeEdge = false;
 		try {
 			BufferedReader br = new BufferedReader(new FileReader(fileName));
 			int numNodes = Integer.parseInt(br.readLine());
@@ -185,6 +174,8 @@ public class WGraph extends JPanel implements MouseMotionListener,
 					while (token.hasMoreTokens()) {
 						st = token.nextToken();
 						if (!st.equals("#")) {
+							if (Double.parseDouble(st) < 0.0)
+								GraphToolBox.containNegativeEdge = true;
 							addEdge(i, col, Double.parseDouble(st));
 						}
 						col++;
@@ -359,9 +350,7 @@ public class WGraph extends JPanel implements MouseMotionListener,
 					node2 = Integer.parseInt(st.nextToken());
 					GraphToolBox.dijkstra(this, node1, node2);
 				} catch (Exception e) {
-					System.out.println("There is no pass between "
-							+ "the source node and the sink node"
-							+ " due to negative edge(s) present");
+					System.out.println("invalid command");
 				}
 				break;
 
@@ -511,7 +500,8 @@ public class WGraph extends JPanel implements MouseMotionListener,
 			}
 			outNeighbours = data.get(i);
 			for (Integer j : nodeSet) {
-				if (outNeighbours.containsKey(j) && !this.isMst) {
+				if (outNeighbours.containsKey(j)) {
+					// if (outNeighbours.containsKey(j) && !this.isMst) {
 					drawEdge(i, j, g, Color.BLACK, Color.BLUE,
 							outNeighbours.get(j));
 				}

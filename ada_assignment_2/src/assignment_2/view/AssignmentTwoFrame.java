@@ -156,6 +156,6 @@ public class AssignmentTwoFrame extends JFrame {
 				+ "bfs 0\niscycle 0\nlinearize\nscc 0\n"
 				+ "distance 0 4\nisEulerian\nisBipartite\n"
 				+ "Wgraph:\ndijkstra 0 1\nmst\nprint floydwarshall"
-				+ "\nprint bellmanford");
+				+ "\nprint bellmanford 0 1");
 	}
 }
