@@ -36,10 +36,6 @@ public class GraphToolBox {
 		priorityQueue = new HeapMinimumPriorityQueue<>();
 		for (Integer node : wgraph.nodeSet) {
 			NodeDistance nodeDistance = new NodeDistance();
-			if (nodeDistance.distance < 0.0) {
-				return;
-			}
-
 			if (node != sourceNode) {
 				leastEdges.put(node, null);
 				nodeDistance.node = node;
@@ -79,11 +75,16 @@ public class GraphToolBox {
 		GraphToolBox.shortestPaths = new ArrayList<>();
 		Stack<Integer> stack = new Stack<>();
 		stack.push(target);
+		HashSet<Integer> nodes = new HashSet<>();
 		int tempNode = getPreviousNode(target);
 		while (tempNode != sourceNode) {// may be not connected by the source
 			stack.push(tempNode);
 			System.out.println("visit " + tempNode);
 			tempNode = getPreviousNode(tempNode);
+			if (nodes.contains(tempNode)) {
+				break;
+			}
+			nodes.add(tempNode);
 		}
 		stack.push(sourceNode);
 		ArrayList<String> verticesLst = new ArrayList<>();
@@ -146,35 +147,35 @@ public class GraphToolBox {
 		for (int i = 0; i <= 8 * n; i++) {
 			System.out.print("-");
 		}
-		wgraph.status.setText("Bellmanford result:\n");
+		// wgraph.status.setText("Bellmanford result:\n");
 		System.out.println();
 		for (Integer node : wgraph.nodeSet) {
 			System.out.print("\t" + node);
-			wgraph.status.append("\t" + node);
+			// wgraph.status.append("\t" + node);
 		}
 		System.out.println();
-		wgraph.status.append("\n");
+		// wgraph.status.append("\n");
 		for (Integer sourceNode : wgraph.nodeSet) {
 			if (!bellmanFord(sourceNode, wgraph)) {
 				System.out.print(sourceNode + "\t");
-				wgraph.status.append(sourceNode + "\t");
+				// wgraph.status.append(sourceNode + "\t");
 				for (Integer node : distances.keySet()) {
 					System.out.print(distances.get(node).getDistance() + "\t");
-					wgraph.status.append(distances.get(node).getDistance()
-							+ "\t");
+					// wgraph.status.append(distances.get(node).getDistance()
+					// + "\t");
 				}
 			} else {
 				System.out.println("The graph contains a negative cycle");
-				wgraph.status.append("The graph contains a negative cycle"
-						+ "\n");
+				// wgraph.status.append("The graph contains a negative cycle"
+				// + "\n");
 			}
 			System.out.println();
-			wgraph.status.append("\n");
+			// wgraph.status.append("\n");
 		}
 		for (int i = 0; i <= 8 * n; i++) {
 			System.out.print("-");
 		}
-		wgraph.status.append("\n");
+		// wgraph.status.append("\n");
 		printBellmanfordProcesses(wgraph, bellmanProcessesList);
 	}
 
@@ -369,12 +370,12 @@ public class GraphToolBox {
 			System.out.print("-");
 		}
 		System.out.println();
-		wgraph.status.setText("Floydwarshall result:\n");
+		// wgraph.status.setText("Floydwarshall result:\n");
 		for (Integer node : wgraph.nodeSet) {
 			System.out.print("\t" + node);
-			wgraph.status.append("\t" + node);
+			// wgraph.status.append("\t" + node);
 		}
-		wgraph.status.append("\n");
+		// wgraph.status.append("\n");
 		System.out.println();
 		String result = "";
 		for (int k = 0; k <= n; k++) {
@@ -405,7 +406,7 @@ public class GraphToolBox {
 			// System.out.println(sj);
 			// }
 			atf.md.addFloydWarshallRow(outRes);
-			wgraph.status.append(outRes);
+			// wgraph.status.append(outRes);
 			// wgraph.status.append(node + "\t" + st.nextToken() + "\n");
 			node++;
 		}
