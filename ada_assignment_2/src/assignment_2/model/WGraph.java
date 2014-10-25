@@ -458,9 +458,7 @@ public class WGraph extends JPanel implements MouseMotionListener,
 					case "bellmanford":
 						Integer fromNode = Integer.parseInt(st.nextToken());
 						Integer toNode = Integer.parseInt(st.nextToken());
-						// GraphToolBox.performBellmanFord(this,);
 						GraphToolBox.performBellmanFord(fromNode, toNode, this);
-						;
 						break;
 					case "floydwarshall":
 						GraphToolBox.performFloydWarshall(this);

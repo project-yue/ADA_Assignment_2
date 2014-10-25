@@ -15,9 +15,11 @@ import assignment_2.model.WGraph;
 public class TableDialog extends JDialog {
 
 	ArrayList<Vector> floydWarshallRows = new ArrayList<>();
+	ArrayList<Vector> bellmanRows = new ArrayList<>();
+	int bellmanIteration = 0;
 
 	public TableDialog(JFrame frame) {
-		super(frame, "Hello", true);
+		super(frame, "Output", true);
 
 	}
 
@@ -58,9 +60,9 @@ public class TableDialog extends JDialog {
 		Container c = getContentPane();
 		c.setLayout(new FlowLayout());
 		c.add(table);
+		clearFloydWarshall();
 		this.pack();
 		this.show();
-		System.out.println("cakke");
 	}
 
 	public void addFloydWarshallRow(String text) {
@@ -69,5 +71,45 @@ public class TableDialog extends JDialog {
 			row.add(temp);
 		}
 		this.floydWarshallRows.add(row);
+	}
+
+	public void clearFloydWarshall() {
+		this.floydWarshallRows.clear();
+	}
+
+	public void bellmanfordTable(JPanel panel) {
+		getContentPane().removeAll();
+		WGraph wgraph = (WGraph) panel;
+		Vector<String> col = new Vector<>();
+		// columns
+		col.add("Iteration");
+		for (Integer node : wgraph.nodeSet) {
+			col.add(Integer.toString(node));
+		}
+		Vector<Vector> row = new Vector<>();
+		for (Vector vec : this.bellmanRows) {
+			row.add(vec);
+		}
+		JTable table = new JTable(row, col);
+		Container c = getContentPane();
+		c.setLayout(new FlowLayout());
+		c.add(table);
+		clearBellmanford();
+		this.pack();
+		this.show();
+	}
+
+	private void clearBellmanford() {
+		this.bellmanIteration = 0;
+		this.bellmanRows.clear();
+	}
+
+	public void addBellmanFordRows(String text) {
+		Vector<String> row = new Vector<>();
+		row.add(Integer.toString(++this.bellmanIteration));
+		for (String temp : text.split("\\s")) {
+			row.add(temp);
+		}
+		this.bellmanRows.add(row);
 	}
 }

@@ -320,7 +320,7 @@ public class GraphToolBox {
 		leastEdges.put(sourceNode, sourceNode);
 		int n = wgraph.nodeSet.size();
 		printBellmanDistances(0, wgraph);
-		HashMap<Integer, Double> lastDistances = new HashMap();
+		HashMap<Integer, Double> lastDistances = new HashMap<>();
 		for (int i = 1; i < n; i++) {// iteration number
 			for (Integer toNode : wgraph.nodeSet) {
 				lastDistances.put(toNode, distances.get(toNode).getDistance());
@@ -362,18 +362,26 @@ public class GraphToolBox {
 			}
 		}
 		printDistances(n, wgraph);
+		AssignmentTwoFrame atf = (AssignmentTwoFrame) wgraph.getParent()
+				.getParent().getParent().getParent().getParent().getParent();
+		atf.md.bellmanfordTable(wgraph);
 		return isNegativeCycle;
 	}
 
 	private static void printBellmanDistances(int i, WGraph wgraph) {
+		AssignmentTwoFrame atf = (AssignmentTwoFrame) wgraph.getParent()
+				.getParent().getParent().getParent().getParent().getParent();
 		String result = "i = " + i + ": ";
+		String resultFor = "";
 		int n = wgraph.nodeSet.size();
-		ArrayList<Double> list = new ArrayList();
+		ArrayList<Double> list = new ArrayList<>();
 		for (int node = 0; node < n; node++) {
 			list.add(distances.get(node).getDistance());
 			result += distances.get(node).getDistance() + " ";
+			resultFor += distances.get(node).getDistance() + "\t";
 		}
 		printList.put(i, list);
+		atf.md.addBellmanFordRows(resultFor);
 		System.out.println(result.trim());
 	}
 
@@ -491,12 +499,9 @@ public class GraphToolBox {
 			System.out.print("-");
 		}
 		System.out.println();
-		// wgraph.status.setText("Floydwarshall result:\n");
 		for (Integer node : wgraph.nodeSet) {
 			System.out.print("\t" + node);
-			// wgraph.status.append("\t" + node);
 		}
-		// wgraph.status.append("\n");
 		System.out.println();
 		String result = "";
 		for (int k = 0; k <= n; k++) {
@@ -516,19 +521,13 @@ public class GraphToolBox {
 			}
 		}
 		StringTokenizer st = new StringTokenizer(result, "\n");
-		// System.out.println(wgraph.getParent().getParent().getParent().getParent().getParent().getParent());
 		AssignmentTwoFrame atf = (AssignmentTwoFrame) wgraph.getParent()
 				.getParent().getParent().getParent().getParent().getParent();
 		int node = 0;
 		int size = st.countTokens();
 		while (node < size) {
 			String outRes = node + "\t" + st.nextToken() + "\n";
-			// for (String sj : outRes.split("\t")) {
-			// System.out.println(sj);
-			// }
 			atf.md.addFloydWarshallRow(outRes);
-			// wgraph.status.append(outRes);
-			// wgraph.status.append(node + "\t" + st.nextToken() + "\n");
 			node++;
 		}
 
