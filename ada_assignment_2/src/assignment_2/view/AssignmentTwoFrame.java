@@ -35,7 +35,7 @@ public class AssignmentTwoFrame extends JFrame {
 	private JPanel digraphPanel;
 	private JPanel wgraph_panel;
 
-	public MyDialog md = new MyDialog(this);
+	public TableDialog md = new TableDialog(this);
 
 	// drawing process in miliseconds
 	public static int TIME_ADJUSTMENT = 1000;
