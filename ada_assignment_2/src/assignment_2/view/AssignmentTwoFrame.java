@@ -38,14 +38,14 @@ public class AssignmentTwoFrame extends JFrame {
 	public TableDialog md = new TableDialog(this);
 
 	// drawing process in miliseconds
-	public static int TIME_ADJUSTMENT = 1000;
+	public static int TIME_ADJUSTMENT = 1500;
 
 	/**
 	 * Launch the application.
 	 */
 	public static void main(String[] args) {
-		// Splash ss = new Splash();
-		// ss.dispose();
+		Splash ss = new Splash();
+		ss.dispose();
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
@@ -112,18 +112,11 @@ public class AssignmentTwoFrame extends JFrame {
 		initDigraphTab();
 		initWgraphTab();
 
-		// insert dialog
-		JMenu testingMenu = new JMenu("Test Dialog");
-		menuBar.add(testingMenu);
-		JMenuItem test = new JMenuItem("Test");
-		testingMenu.add(test);
-		test.addActionListener(new ActionListener() {
+	}
 
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				md.display();
-			}
-		});
+	public void warningNegativeCycle() {
+		JOptionPane.showMessageDialog(this,
+				"The graph contains negative cycle(s)");
 	}
 
 	private void initDigraphTab() {

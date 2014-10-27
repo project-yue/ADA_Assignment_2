@@ -12,6 +12,11 @@ import javax.swing.JTable;
 
 import assignment_2.model.WGraph;
 
+/**
+ * 
+ * @author yue
+ *
+ */
 public class TableDialog extends JDialog {
 
 	ArrayList<Vector> floydWarshallRows = new ArrayList<>();
@@ -53,8 +58,12 @@ public class TableDialog extends JDialog {
 			col.add(Integer.toString(node));
 		}
 		Vector<Vector> row = new Vector<>();
-		for (Vector vec : this.floydWarshallRows) {
-			row.add(vec);
+		int iter = 0;
+		row.add(col);
+		for (int i = wgraph.nodeSet.size() * wgraph.nodeSet.size(); i < floydWarshallRows
+				.size(); i++) {
+			this.floydWarshallRows.get(i).add(0, iter++);
+			row.add(this.floydWarshallRows.get(i));
 		}
 		JTable table = new JTable(row, col);
 		Container c = getContentPane();
@@ -82,12 +91,17 @@ public class TableDialog extends JDialog {
 		WGraph wgraph = (WGraph) panel;
 		Vector<String> col = new Vector<>();
 		// columns
-		col.add("Iteration");
+		col.add("");
 		for (Integer node : wgraph.nodeSet) {
 			col.add(Integer.toString(node));
 		}
-		Vector<Vector> row = new Vector<>();
-		for (Vector vec : this.bellmanRows) {
+		Vector<Vector<String>> row = new Vector<>();
+		row.add(col);
+		for (Vector<String> vec : this.bellmanRows) {
+			String temp = vec.get(0);
+			temp = Integer.toString(Integer.parseInt(temp) - 1);
+			String another = "Iteration:" + temp;
+			vec.set(0, another);
 			row.add(vec);
 		}
 		JTable table = new JTable(row, col);

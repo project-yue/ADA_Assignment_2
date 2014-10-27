@@ -31,13 +31,18 @@ public class GraphToolBox {
 	private static HashMap<Integer, ArrayList<Double>> printList;
 	private static HashMap<Integer, ArrayList<Integer>> inList;// store the
 																// indegree
+	public static ArrayList<UndirectedWeightedEdge> mstEdges;
+	public static ArrayList<UndirectedWeightedEdge> dijkEdges;
 	public static boolean containNegativeEdge = false;
 
 	public static void dijkstra(WGraph wgraph, Integer sourceNode,
 			Integer sinkNode) {
+		dijkEdges = new ArrayList<>();
+		mstEdges = null;
 		if (containNegativeEdge) {
 			System.out.println("Graph contains negative"
 					+ " edge; therefore, dijkstra cannot" + " be applied");
+			return;
 		}
 		priorityQueue = new HeapMinimumPriorityQueue<>();
 		for (Integer node : wgraph.nodeSet) {
@@ -85,7 +90,6 @@ public class GraphToolBox {
 		int tempNode = getPreviousNode(target);
 		while (tempNode != sourceNode) {// may be not connected by the source
 			stack.push(tempNode);
-			System.out.println("visit " + tempNode);
 			tempNode = getPreviousNode(tempNode);
 			if (nodes.contains(tempNode)) {
 				break;
@@ -125,6 +129,9 @@ public class GraphToolBox {
 			int from = Integer.parseInt(temp[0]);
 			int to = Integer.parseInt(temp[1]);
 			double distance = g.data.get(from).get(to);
+			UndirectedWeightedEdge uwn = new UndirectedWeightedEdge(from, to,
+					distance);
+			dijkEdges.add(uwn);
 			g.drawEdge(from, to, g.getGraphics(), Color.CYAN, Color.BLUE,
 					distance);
 			try {
@@ -132,11 +139,6 @@ public class GraphToolBox {
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
-		}
-		try {
-			Thread.sleep(AssignmentTwoFrame.TIME_ADJUSTMENT);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
 		}
 		System.out.println("Dijstra Path completed");
 	}
@@ -151,11 +153,16 @@ public class GraphToolBox {
 		distances = new HashMap<>();
 		printList = new HashMap<>();
 		inList = new HashMap<>();
+		AssignmentTwoFrame atf = (AssignmentTwoFrame) wgraph.getParent()
+				.getParent().getParent().getParent().getParent().getParent();
 		indegreeList(wgraph);
 		if (!bellmanFord(sourceNode, wgraph)) {
 			System.out.println("The shortest distance from node"
 					+ "source node " + sourceNode + " to node " + destNode
 					+ " is " + distances.get(destNode).getDistance());
+		} else {
+			System.out.println("The graph contains negative cycle(s)");
+			atf.warningNegativeCycle();
 		}
 	}
 
@@ -264,6 +271,8 @@ public class GraphToolBox {
 	}
 
 	public static void mst(WGraph wgraph) {
+		mstEdges = new ArrayList<>();
+		dijkEdges = null;
 		List<UndirectedWeightedEdge> undirectedWeightedEdges;
 		Set<UndirectedWeightedEdge> undirectedWeightedEdgeSet = new HashSet<>();
 		for (Integer node1 : wgraph.nodeSet) {
@@ -288,6 +297,7 @@ public class GraphToolBox {
 		while (pq.size() > 0) {
 			UndirectedWeightedEdge wn = pq.getMinimumum();
 			System.out.println(wn);
+			mstEdges.add(wn);
 			wgraph.drawEdge(wn.node1, wn.node2, wgraph.getGraphics(),
 					Color.GREEN, Color.RED, wn.weight);
 			pq.heapify();
@@ -382,17 +392,26 @@ public class GraphToolBox {
 		}
 		System.out.println();
 		String result = "";
+		String resultForDialog = "";
+		boolean isForDialog = false;
 		for (int k = 0; k <= n; k++) {
 			System.out.println("k = " + k);
 			for (int i = 0; i < n; i++) {
 				for (int j = 0; j < n; j++) {
-					if (k == n) {
-						System.out.print(allPairsShortestPaths.get(k).get(i)
+					// if (k == n) {
+
+					System.out.print(allPairsShortestPaths.get(k).get(i).get(j)
+							+ " ");
+					result += allPairsShortestPaths.get(k).get(i).get(j) + "\t";
+					// }
+					if (isForDialog) {
+						resultForDialog += allPairsShortestPaths.get(k).get(i)
 								.get(j)
-								+ " ");
-						result += allPairsShortestPaths.get(k).get(i).get(j)
 								+ "\t";
 					}
+				}
+				if (k == n) {
+					isForDialog = true;
 				}
 				result += "\n";
 				System.out.println();
@@ -404,7 +423,7 @@ public class GraphToolBox {
 		int node = 0;
 		int size = st.countTokens();
 		while (node < size) {
-			String outRes = node + "\t" + st.nextToken() + "\n";
+			String outRes = st.nextToken() + "\t";
 			atf.md.addFloydWarshallRow(outRes);
 			node++;
 		}

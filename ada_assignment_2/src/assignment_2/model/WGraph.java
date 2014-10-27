@@ -14,18 +14,20 @@ import java.awt.event.MouseMotionListener;
 import java.awt.geom.Line2D;
 import java.awt.geom.QuadCurve2D;
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Set;
 import java.util.StringTokenizer;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
 import assignment_2.structure.pq.HeapMinimumPriorityQueue;
+import assignment_2.structure.pq.UndirectedWeightedEdge;
 import assignment_2.structure.pq.WeightNode;
 import assignment_2.util.GraphToolBox;
 
@@ -61,15 +63,11 @@ public class WGraph extends JPanel implements MouseMotionListener,
 	// The collection of node in the graph
 	// This set is the key set of data
 	public Set<Integer> nodeSet;
+	// public Set<WeightNode> edgeSet;
 	// The textfield used for user to specify commands
 	public JTextField tf;
-
 	// Added weight PQ and set for mst
 	public HeapMinimumPriorityQueue<WeightNode> weightPQ;
-
-	// public boolean isMst;
-
-	//
 
 	// The Constructor
 	public WGraph() {
@@ -89,7 +87,7 @@ public class WGraph extends JPanel implements MouseMotionListener,
 		addMouseMotionListener(this);
 		addMouseListener(this);
 		tf = new JTextField();
-		tf.setText("load q2.dat");
+		tf.setText("load q2");
 		tf.addActionListener(this);
 		setLayout(new BorderLayout());
 		add(panel, BorderLayout.NORTH);
@@ -138,7 +136,6 @@ public class WGraph extends JPanel implements MouseMotionListener,
 		HashMap<Integer, Double> list = data.get((Integer) node1);
 		if (!list.containsKey((Integer) node2)) {
 			list.put((Integer) node2, (Double) weight);
-			// System.out.println(node1 + " " + node2 + " " + weight);
 			WeightNode wn = new WeightNode(node1, node2, weight);
 			this.weightPQ.insert(wn);
 		}
@@ -152,15 +149,23 @@ public class WGraph extends JPanel implements MouseMotionListener,
 	 *
 	 */
 	public void load(String fileName) {
-		this.nodeSet.clear();
+		if (nodeSet != null) {
+			this.nodeSet.clear();
+			if (GraphToolBox.dijkEdges != null)
+				GraphToolBox.dijkEdges = null;
+			if (GraphToolBox.mstEdges != null)
+				GraphToolBox.mstEdges = null;
+		}
 		GraphToolBox.containNegativeEdge = false;
 		try {
-			BufferedReader br = new BufferedReader(new FileReader(fileName));
+			URL url = getClass().getResource(
+					"/assignment_2/testcases/" + fileName + ".graph");
+			File file = new File(url.getFile());
+			BufferedReader br = new BufferedReader(new FileReader(file));
 			int numNodes = Integer.parseInt(br.readLine());
 			for (Integer node : this.data.keySet()) {
 				this.nodeSet.add(node);
 			}
-			int pos = 0;
 			String output;
 			for (int i = 0; i < numNodes; i++) {
 				add(i);
@@ -174,8 +179,9 @@ public class WGraph extends JPanel implements MouseMotionListener,
 					while (token.hasMoreTokens()) {
 						st = token.nextToken();
 						if (!st.equals("#")) {
-							if (Double.parseDouble(st) < 0.0)
+							if (Double.parseDouble(st) < 0.0) {
 								GraphToolBox.containNegativeEdge = true;
+							}
 							addEdge(i, col, Double.parseDouble(st));
 						}
 						col++;
@@ -335,7 +341,7 @@ public class WGraph extends JPanel implements MouseMotionListener,
 	 */
 	public void actionPerformed(ActionEvent evt) {
 		String command = tf.getText();
-
+		boolean repaint = true;
 		StringTokenizer st = new StringTokenizer(command);
 
 		String token, opt;
@@ -348,16 +354,22 @@ public class WGraph extends JPanel implements MouseMotionListener,
 				try {
 					node1 = Integer.parseInt(st.nextToken());
 					node2 = Integer.parseInt(st.nextToken());
+					if (st.hasMoreTokens()) {
+						System.out.println("It's an invalid command");
+						break;
+					}
 					GraphToolBox.dijkstra(this, node1, node2);
+					repaint = false;
 				} catch (Exception e) {
 					System.out.println("invalid command");
 				}
 				break;
 
 			case "mst":
-				GraphToolBox.mst(this);
-				break;
-			case "kruskal":
+				if (st.hasMoreTokens()) {
+					System.out.println("It's an invalid command");
+					break;
+				}
 				GraphToolBox.mst(this);
 				break;
 			case "load":
@@ -365,6 +377,7 @@ public class WGraph extends JPanel implements MouseMotionListener,
 					clear();
 					opt = st.nextToken();
 					load(opt);
+					repaint();
 				} catch (Exception e) {
 					System.out.println("Invalid command");
 				}
@@ -447,9 +460,17 @@ public class WGraph extends JPanel implements MouseMotionListener,
 					case "bellmanford":
 						Integer fromNode = Integer.parseInt(st.nextToken());
 						Integer toNode = Integer.parseInt(st.nextToken());
+						if (st.hasMoreTokens()) {
+							System.out.println("It's an invalid command");
+							break;
+						}
 						GraphToolBox.performBellmanFord(fromNode, toNode, this);
 						break;
 					case "floydwarshall":
+						if (st.hasMoreTokens()) {
+							System.out.println("It's an invalid command");
+							break;
+						}
 						GraphToolBox.performFloydWarshall(this);
 						break;
 					default:
@@ -473,6 +494,7 @@ public class WGraph extends JPanel implements MouseMotionListener,
 			}
 		}
 		repaint();
+
 	}
 
 	/**
@@ -501,9 +523,41 @@ public class WGraph extends JPanel implements MouseMotionListener,
 			outNeighbours = data.get(i);
 			for (Integer j : nodeSet) {
 				if (outNeighbours.containsKey(j)) {
-					// if (outNeighbours.containsKey(j) && !this.isMst) {
-					drawEdge(i, j, g, Color.BLACK, Color.BLUE,
-							outNeighbours.get(j));
+					UndirectedWeightedEdge test = new UndirectedWeightedEdge(i,
+							j, outNeighbours.get(j));
+					if (GraphToolBox.mstEdges != null
+							&& GraphToolBox.mstEdges.size() > 0) {
+						boolean shouldPaint = false;
+						for (UndirectedWeightedEdge uwn : GraphToolBox.mstEdges) {
+							if (test.equals(uwn))
+								shouldPaint = true;
+						}
+						if (shouldPaint) {
+							drawEdge(i, j, g, Color.GREEN, Color.RED,
+									outNeighbours.get(j));
+						} else {
+							drawEdge(i, j, g, Color.BLACK, Color.BLUE,
+									outNeighbours.get(j));
+						}
+
+					} else if (GraphToolBox.dijkEdges != null
+							&& GraphToolBox.dijkEdges.size() > 0) {
+						boolean shouldPaint = false;
+						for (UndirectedWeightedEdge uwn : GraphToolBox.dijkEdges) {
+							if (test.equals(uwn))
+								shouldPaint = true;
+						}
+						if (shouldPaint) {
+							drawEdge(i, j, g, Color.CYAN, Color.BLUE,
+									outNeighbours.get(j));
+						} else {
+							drawEdge(i, j, g, Color.BLACK, Color.BLUE,
+									outNeighbours.get(j));
+						}
+					} else {
+						drawEdge(i, j, g, Color.BLACK, Color.BLUE,
+								outNeighbours.get(j));
+					}
 				}
 			}
 
@@ -732,7 +786,7 @@ public class WGraph extends JPanel implements MouseMotionListener,
 			double x2subx1sqr = Math.pow((node.xpos - xpos), 2);
 			double y2suby1sqr = Math.pow((node.ypos - ypos), 2);
 			double rsqr = Math.pow(CIRCLEDIAMETER * 1.0 / 2, 2);// Square root
-																// of radius
+			// of radius
 			double y = Math
 					.sqrt((y2suby1sqr * rsqr / (x2subx1sqr + y2suby1sqr)))
 					* direction + ypos;

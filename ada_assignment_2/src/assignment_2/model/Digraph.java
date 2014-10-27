@@ -13,8 +13,10 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.geom.Line2D;
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -96,7 +98,11 @@ public class Digraph extends JPanel implements MouseMotionListener,
 	public void load(String fileName) {
 		data.clear();
 		try {
-			BufferedReader br = new BufferedReader(new FileReader(fileName));
+			URL url = getClass().getResource(
+					"/assignment_2/testcases/" + fileName + ".graph");
+			File file = new File(url.getFile());
+			BufferedReader br = new BufferedReader(new FileReader(file));
+
 			int numNodes = Integer.parseInt(br.readLine());
 			int pos = 0;
 			String output;
