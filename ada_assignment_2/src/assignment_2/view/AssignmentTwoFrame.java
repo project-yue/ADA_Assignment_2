@@ -138,9 +138,9 @@ public class AssignmentTwoFrame extends JFrame {
 	}
 
 	private void displayInfo() {
-		JOptionPane.showMessageDialog(this,
-				"ADA Assignment 2:  Graph Theory \n"
-						+ "                              by Ximei & Yue");
+		JOptionPane.showMessageDialog(this, "ADA Assignment 2:"
+				+ "  Graph Theory \n                  "
+				+ "             by Ximei & Yue\n" + "10/2014");
 	}
 
 	private void displayInstructions() {
