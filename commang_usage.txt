@@ -58,3 +58,9 @@ plot the shortest path from A to B
 
 mst
 plot the minimal spanning tree by using kraskal's algorithm
+
+bellmanford
+generate all nodes shortest paths in a table
+
+floydwarshall
+generate all nodes shortest paths (not functioning atm)
